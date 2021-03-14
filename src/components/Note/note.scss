@@ -1,0 +1,129 @@
+@import "../../variables.scss";
+
+.note {
+    position: relative;
+    padding: 5px;
+    width: 300px;
+    margin: 15px 0 15px 0;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.4);
+    color: rgb(77, 77, 77);
+    background-color: #ffffcd;
+    transition: border-bottom-right-radius 0.3s;
+}
+
+.note:hover {
+    border-bottom-right-radius: 120px 10px;
+    transition: border-bottom-right-radius 0.3s;
+}
+
+.corner-shadow {
+    content: "";
+    position: absolute;
+    opacity: 1;
+    z-index: -1;
+    right: -0px;
+    bottom: 20px;
+    width: 200px;
+    height: 25px;
+    background: rgba(0, 0, 0, 0.2);
+    box-shadow: 2px 15px 5px rgba(0, 0, 0, 0.4);
+    transform: matrix(-1, -0.1, 0, 1, 0, 0);
+    opacity: 0;
+    transition: opacity 0.4s;
+}
+.note:hover .corner-shadow {
+    opacity: 1;
+    transition: opacity 0.4s;
+}
+
+.content-wrapper {
+    display: flex;
+}
+
+.content {
+    width: 240px;
+    font-size: 0.9rem;
+    padding: 10px;
+    word-wrap: break-word;
+}
+
+.collapse {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.content a {
+    display: block;
+    width: 240px;
+    word-wrap: break-word;
+}
+
+.show-more {
+    cursor: pointer;
+    margin-top: 5px;
+    color: $light-blue;
+}
+
+.from {
+    width: 280px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.7.8rem;
+    margin: 5px 10px 5px 10px;
+}
+
+.time {
+    margin: 0 10px 5px 10px;
+}
+
+.button-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.button {
+    width: 20px;
+    height: 20px;
+    padding: 6px;
+    margin: 5px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.button-copy {
+    background-color: $light-yellow;
+}
+
+.button-remove {
+    background-color: $light-pink;
+}
+
+.button-download {
+    background-color: $light-green;
+}
+
+.copy,
+.remove,
+.download {
+    width: 20px;
+    height: 20px;
+    background-size: cover;
+}
+
+.copy {
+    background-image: url("../../assets/copy.png");
+}
+
+.remove {
+    background-image: url("../../assets/eraser.png");
+}
+
+.download {
+    background-image: url("../../assets/download.png");
+}
+
+.image {
+    max-width: 240px;
+}

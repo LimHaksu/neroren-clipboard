@@ -1,0 +1,58 @@
+@import "../../../variables.scss";
+
+.line-setting-wrapper {
+    display: flex;
+    align-items: center;
+
+    .line-wrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        min-width: 80px;
+        margin-right: 10px;
+
+        .line-button {
+            background-color: $light-black;
+            width: 30px;
+            height: 30px;
+            border: 0;
+            outline: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+        }
+
+        .up-button {
+            width: 20px;
+            height: 20px;
+            background-image: url("../../../assets/cat-print.png");
+            background-size: cover;
+        }
+
+        .line-text {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 30px;
+            height: 35px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .down-button {
+            width: 20px;
+            height: 20px;
+            background-image: url("../../../assets/cat-print.png");
+            background-size: cover;
+            transform: rotate(180deg);
+        }
+    }
+
+    .line-message {
+        font-weight: bold;
+        color: $light-black;
+    }
+}

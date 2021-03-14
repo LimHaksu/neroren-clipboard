@@ -1,0 +1,37 @@
+@import "../../../variables.scss";
+
+.toggle-button-wrapper {
+    display: flex;
+    align-items: center;
+    .toggle-button {
+        height: 40px;
+        width: 80px;
+        border-radius: 18px;
+        background-color: #ddd;
+        display: flex;
+        justify-content: center;
+        margin-right: 10px;
+        align-items: center;
+        cursor: pointer;
+
+        .circle {
+            width: 32px;
+            height: 32px;
+            transform: translate(18px);
+            background-image: url("../../../assets/white-cat.png");
+            background-size: cover;
+            transition: transform 0.4s, background-image 0.4s;
+
+            &.active {
+                transform: translate(-18px);
+                background-image: url("../../../assets/black-cat.png");
+                background-size: cover;
+                transition: transform 0.4s, background-image 0.4s;
+            }
+        }
+    }
+    .toggle-message {
+        font-weight: bold;
+        color: $light-black;
+    }
+}

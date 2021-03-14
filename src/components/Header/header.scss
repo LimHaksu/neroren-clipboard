@@ -1,0 +1,40 @@
+@import "../../variables.scss";
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 310px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: $light-black;
+    margin: 8px 8px 0 8px;
+}
+
+.header-button-wrapper {
+    display: flex;
+}
+
+.button-clear {
+    background-color: rgb(224, 31, 79, 0.425);
+}
+
+.button-settings {
+    background-color: rgba(31, 137, 224, 0.425);
+    margin-right: 0;
+}
+
+.clear,
+.settings {
+    width: 20px;
+    height: 20px;
+    background-size: cover;
+}
+
+.clear {
+    background-image: url("../../assets/delete.png");
+}
+
+.settings {
+    background-image: url("../../assets/settings.png");
+}

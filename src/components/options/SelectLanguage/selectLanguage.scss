@@ -1,0 +1,22 @@
+.language-label {
+    margin-right: 10px;
+    font-weight: bold;
+    user-select: none;
+    display: inline-block;
+    text-align: center;
+    width: 80px;
+}
+
+.language {
+    padding: 10px;
+    font-weight: bold;
+    outline: none;
+    border-radius: 10px;
+    cursor: pointer;
+
+    option {
+        display: block;
+        font-weight: bold;
+        padding: 10px;
+    }
+}

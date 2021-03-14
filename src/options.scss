@@ -1,0 +1,50 @@
+@import "./variables.scss";
+
+button {
+    padding: 0;
+}
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 70px;
+    user-select: none;
+    background-color: #fdfdfd;
+}
+
+body * {
+    color: $light-black;
+    font-size: 1.1rem;
+}
+
+.cat {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background-image: url("./assets/modal_cat.png");
+    background-size: cover;
+    transform: translate(-150px, -265px) rotate(-180deg);
+
+    &.visible {
+        transform: translate(-150px, -190px) rotate(-180deg);
+        transition: transform 1s;
+    }
+}
+
+.options > * {
+    margin-bottom: 20px;
+}
+
+@media (min-width: 501px) {
+    /* CSS */
+    .options {
+        width: 500px;
+    }
+}
+
+@media (max-width: 500px) {
+    .options {
+        width: 300px;
+    }
+}

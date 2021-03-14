@@ -1,0 +1,40 @@
+@import "../../variables.scss";
+
+.bottom-modal {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    bottom: -54px;
+    z-index: 999;
+    width: 100%;
+    height: 50px;
+    border-radius: 10px 10px 0 0px;
+    background-color: #fefefe;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: $light-black;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.4);
+    transition: transform 0.5s;
+    background-image: url("../../assets/modal_cat.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: 10px;
+
+    &.visible {
+        transform: translate(0, -54px);
+        transition: transform 0.5s;
+    }
+
+    .button-undo {
+        position: absolute;
+        right: 10px;
+        background-color: $light-green;
+        .undo {
+            width: 20px;
+            height: 20px;
+            background-size: cover;
+            background-image: url("../../assets/undo-arrow.png");
+        }
+    }
+}

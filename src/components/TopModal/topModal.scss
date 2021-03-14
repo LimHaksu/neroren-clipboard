@@ -1,0 +1,62 @@
+@import "../../variables.scss";
+$top-modal-height: 120px;
+
+.top-modal {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    top: calc(-#{$top-modal-height} - 4px);
+    z-index: 1000;
+    width: 100%;
+    height: $top-modal-height;
+    border-radius: 0 0 10px 10px;
+    background-color: #fefefe;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    transition: transform 0.5s;
+    * {
+        user-select: none;
+    }
+    &.visible {
+        transform: translate(0, $top-modal-height);
+        transition: transform 0.5s;
+    }
+    .content {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: $light-black;
+        margin-top: 45px;
+        padding-bottom: 0;
+    }
+    .cat-image {
+        position: absolute;
+        width: 45px;
+        height: 45px;
+        transform: translate(-125px, -36px) rotate(180deg);
+        background-image: url("../../assets/modal_cat.png");
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    .top-modal-button-wrapper {
+        margin-bottom: 15px;
+        .button {
+            border: 0;
+            width: 70px;
+            height: 35px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #ffffff;
+            outline: none;
+        }
+        .yes-button {
+            background-color: rgba(224, 31, 79, 0.562);
+        }
+        .no-button {
+            background-color: rgba(31, 224, 95, 0.562);
+        }
+    }
+}
