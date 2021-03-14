@@ -57,12 +57,6 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     }
 });
 
-// chrome.runtime.onMessage.addListener(function (message, callback) {
-//     if (message == "runContentScript") {
-//         chrome.tabs.executeScript({ file: "contentScript.js" });
-//     }
-// });
-
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     chrome.storage.sync.get(NerorenClipboardSettings, (result) => {
         const settings = result[NerorenClipboardSettings];
