@@ -1,15 +1,23 @@
 const NerorenClipboard = "NerorenClipboard";
 const NerorenClipboardSettings = "NerorenClipboardSettings";
 
-enum Languages {
+enum Language {
     CHINESE = "CHINESE",
     ENGLISH = "ENGLISH",
     JAPANESE = "JAPANESE",
     KOREAN = "KOREAN",
 }
 
-const getContextMenusTitle = (language: Languages) => {
-    const { CHINESE, ENGLISH, JAPANESE, KOREAN } = Languages;
+interface Settings {
+    language: Language;
+    autoSave: boolean;
+    numOfLines: number;
+}
+
+const ContextMenuItemId = "neroren-clipboard-save";
+
+const getContextMenusTitle = (language: Language) => {
+    const { CHINESE, ENGLISH, JAPANESE, KOREAN } = Language;
     switch (language) {
         case CHINESE:
             return "保存到Neroren剪贴板";
@@ -23,14 +31,30 @@ const getContextMenusTitle = (language: Languages) => {
     }
 };
 
-chrome.contextMenus.create({
-    id: "neroren-clipboard-save",
-    title: getContextMenusTitle(Languages.KOREAN),
-    contexts: ["selection", "image", "link"],
-});
+const setContextMenus = () => {
+    chrome.contextMenus.remove(ContextMenuItemId);
+
+    chrome.storage.sync.get(NerorenClipboardSettings, (result) => {
+        let settings: Settings | undefined = result[NerorenClipboardSettings];
+        if (!settings) {
+            settings = {
+                autoSave: true,
+                language: Language.ENGLISH,
+                numOfLines: 3,
+            };
+        }
+        chrome.contextMenus.create({
+            id: ContextMenuItemId,
+            title: getContextMenusTitle(settings.language),
+            contexts: ["selection", "image", "link"],
+        });
+    });
+};
+
+setContextMenus();
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-    if (info.menuItemId == "neroren-clipboard-save") {
+    if (info.menuItemId == ContextMenuItemId) {
         chrome.storage.sync.get(NerorenClipboard, (result) => {
             let notes = result.NerorenClipboard;
             if (!notes) {
@@ -57,25 +81,31 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     }
 });
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    chrome.storage.sync.get(NerorenClipboardSettings, (result) => {
-        const settings = result[NerorenClipboardSettings];
-        if (settings.autoSave) {
-            const { selectionText } = message;
-            const { title, url: pageUrl } = sender.tab as chrome.tabs.Tab;
-            chrome.storage.sync.get(NerorenClipboard, (result) => {
-                let notes = result.NerorenClipboard;
-                if (!notes) {
-                    notes = [];
-                }
-                const data = { type: "text", content: selectionText };
-                chrome.storage.sync.set({
-                    NerorenClipboard: [...notes, { data, pageUrl, date: new Date().toJSON(), title }],
+chrome.runtime.onMessage.addListener((message, sender) => {
+    const { type } = message;
+    if (type === "copy") {
+        chrome.storage.sync.get(NerorenClipboardSettings, (settingResult) => {
+            const settings = settingResult[NerorenClipboardSettings];
+            console.log(settings);
+            if (settings.autoSave) {
+                const { selectionText } = message.data;
+                const { title, url: pageUrl } = sender.tab as chrome.tabs.Tab;
+                chrome.storage.sync.get(NerorenClipboard, (result) => {
+                    let notes = result.NerorenClipboard;
+                    if (!notes) {
+                        notes = [];
+                    }
+                    const data = { type: "text", content: selectionText };
+                    chrome.storage.sync.set({
+                        NerorenClipboard: [...notes, { data, pageUrl, date: new Date().toJSON(), title }],
+                    });
+                    chrome.action.setBadgeText({ text: `${notes.length + 1}` });
                 });
-                chrome.action.setBadgeText({ text: `${notes.length + 1}` });
-            });
-        }
-    });
+            }
+        });
+    } else if (type === "setting") {
+        setContextMenus();
+    }
 });
 
 chrome.storage.sync.get(NerorenClipboard, (result) => {

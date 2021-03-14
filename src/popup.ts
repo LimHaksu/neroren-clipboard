@@ -34,7 +34,9 @@ export const getSettings = () => {
 
 export const setSettings = (newSettings: Settings) => {
     settings = newSettings;
-    chrome.storage.sync.set({ NerorenClipboardSettings: newSettings });
+    chrome.storage.sync.set({ NerorenClipboardSettings: newSettings }, () => {
+        chrome.runtime.sendMessage({ type: "setting" });
+    });
 };
 
 chrome.storage.sync.get(NerorenClipboardSettings, (result) => {

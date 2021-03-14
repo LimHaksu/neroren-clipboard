@@ -1,4 +1,4 @@
 document.addEventListener("copy", () => {
     const selection = document.getSelection();
-    chrome.runtime.sendMessage({ selectionText: selection ? selection.toString() : "" });
+    chrome.runtime.sendMessage({ type: "copy", data: { selectionText: selection ? selection.toString() : "" } });
 });
