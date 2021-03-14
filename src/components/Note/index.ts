@@ -1,5 +1,5 @@
 import { NerorenClipboardType, NerorenClipboard, getSettings } from "../../popup";
-import { Language } from "../../libs/language";
+import { Language, getShowText } from "../../libs/language";
 import { ModalType, popupBottomModal } from "../BottomModal";
 import "./note.scss";
 
@@ -63,16 +63,17 @@ export const createNote = (note: NerorenClipboardType) => {
             contentDom.classList.add("collapse");
             contentDom.style.webkitLineClamp = `${numOfLines}`;
 
+            const showText = getShowText(settings.language);
             const showMore = document.createElement("div");
             showMore.className = "show-more";
-            showMore.textContent = "show more";
+            showMore.textContent = showText.more;
             showMore.addEventListener("click", () => {
                 if (is_collapse) {
                     contentDom.style.webkitLineClamp = "unset";
-                    showMore.textContent = "show less";
+                    showMore.textContent = showText.less;
                 } else {
                     contentDom.style.webkitLineClamp = `${numOfLines}`;
-                    showMore.textContent = "show more";
+                    showMore.textContent = showText.more;
                 }
                 is_collapse = !is_collapse;
             });

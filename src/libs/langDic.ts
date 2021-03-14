@@ -12,6 +12,10 @@ interface contentsByLanguage {
         yes: string;
         no: string;
     };
+    showText: {
+        more: string;
+        less: string;
+    };
 }
 
 const langDic: { [key: string]: contentsByLanguage } = {
@@ -29,6 +33,10 @@ const langDic: { [key: string]: contentsByLanguage } = {
             yes: "是",
             no: "不",
         },
+        showText: {
+            more: "展开",
+            less: "隐藏",
+        },
     },
     ENGLISH: {
         settingsHeader: "Settings",
@@ -43,6 +51,10 @@ const langDic: { [key: string]: contentsByLanguage } = {
         confirmText: {
             yes: "Yes",
             no: "No",
+        },
+        showText: {
+            more: "show more",
+            less: "show less",
         },
     },
     JAPANESE: {
@@ -59,6 +71,10 @@ const langDic: { [key: string]: contentsByLanguage } = {
             yes: "はい",
             no: "いいえ",
         },
+        showText: {
+            more: "もっと見る",
+            less: "表示されない",
+        },
     },
     KOREAN: {
         settingsHeader: "설정",
@@ -73,6 +89,10 @@ const langDic: { [key: string]: contentsByLanguage } = {
         confirmText: {
             yes: "네",
             no: "아니오",
+        },
+        showText: {
+            more: "더보기",
+            less: "감추기",
         },
     },
 };

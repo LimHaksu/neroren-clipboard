@@ -55,3 +55,7 @@ export const getLineSettingMessageText = (language: Language) => {
 export const getConfirmText = (language: Language) => {
     return langDic[language].confirmText;
 };
+
+export const getShowText = (language: Language) => {
+    return langDic[language].showText;
+};
