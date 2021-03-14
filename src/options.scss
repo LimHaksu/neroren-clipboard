@@ -27,7 +27,7 @@ body * {
     transform: translate(-150px, -265px) rotate(-180deg);
 
     &.visible {
-        transform: translate(-150px, -190px) rotate(-180deg);
+        transform: translate(-150px, -185px) rotate(-180deg);
         transition: transform 1s;
     }
 }
