@@ -52,7 +52,7 @@ chrome.storage.sync.get(NerorenClipboardSettings, (result) => {
     setHeaderContent(settings.language);
 });
 
-chrome.storage.sync.get(NerorenClipboard, (result) => {
+chrome.storage.local.get(NerorenClipboard, (result) => {
     const notes: NerorenClipboardType[] = result[NerorenClipboard];
     if (notes) {
         notes.forEach(({ data, pageUrl, date, title }) => {

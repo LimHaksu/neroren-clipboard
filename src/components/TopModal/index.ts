@@ -10,9 +10,9 @@ const noButton = el?.querySelector("#no-button") as HTMLButtonElement;
 
 yesButton?.addEventListener("click", () => {
     const noteDoms = document.getElementsByClassName("note");
-    chrome.storage.sync.get(NerorenClipboard, (result) => {
+    chrome.storage.local.get(NerorenClipboard, (result) => {
         const notes = result.NerorenClipboard;
-        chrome.storage.sync.set({ NerorenClipboard: [] });
+        chrome.storage.local.set({ NerorenClipboard: [] });
         chrome.action.setBadgeText({ text: "" });
         Array.from(noteDoms).forEach((noteDom) => {
             noteDom.remove();

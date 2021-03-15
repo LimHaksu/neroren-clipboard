@@ -53,13 +53,13 @@ export const popupBottomModal = (type: ModalType, notes: NerorenClipboardType[])
             undoButton.className = "button button-undo";
             undoButton.innerHTML = `<div class="undo"></div>`;
             undoButton.addEventListener("click", () => {
-                chrome.storage.sync.get(NerorenClipboard, (result) => {
+                chrome.storage.local.get(NerorenClipboard, (result) => {
                     let prevNotes = result[NerorenClipboard];
                     if (!prevNotes) {
                         prevNotes = [];
                     }
                     const newNotes = [...prevNotes, ...notes];
-                    chrome.storage.sync.set({ NerorenClipboard: newNotes });
+                    chrome.storage.local.set({ NerorenClipboard: newNotes });
                     chrome.action.setBadgeText({ text: newNotes.length > 0 ? `${newNotes.length}` : "" });
 
                     notes.forEach((note) => {

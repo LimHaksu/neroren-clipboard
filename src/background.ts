@@ -55,7 +55,7 @@ setContextMenus();
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
     if (info.menuItemId == ContextMenuItemId) {
-        chrome.storage.sync.get(NerorenClipboard, (result) => {
+        chrome.storage.local.get(NerorenClipboard, (result) => {
             let notes = result.NerorenClipboard;
             if (!notes) {
                 notes = [];
@@ -72,7 +72,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
             }
 
             if (data) {
-                chrome.storage.sync.set({
+                chrome.storage.local.set({
                     NerorenClipboard: [...notes, { data, pageUrl, date: new Date().toJSON(), title }],
                 });
                 chrome.action.setBadgeText({ text: `${notes.length + 1}` });
@@ -86,17 +86,16 @@ chrome.runtime.onMessage.addListener((message, sender) => {
     if (type === "copy") {
         chrome.storage.sync.get(NerorenClipboardSettings, (settingResult) => {
             const settings = settingResult[NerorenClipboardSettings];
-            console.log(settings);
             if (settings.autoSave) {
                 const { selectionText } = message.data;
                 const { title, url: pageUrl } = sender.tab as chrome.tabs.Tab;
-                chrome.storage.sync.get(NerorenClipboard, (result) => {
+                chrome.storage.local.get(NerorenClipboard, (result) => {
                     let notes = result.NerorenClipboard;
                     if (!notes) {
                         notes = [];
                     }
                     const data = { type: "text", content: selectionText };
-                    chrome.storage.sync.set({
+                    chrome.storage.local.set({
                         NerorenClipboard: [...notes, { data, pageUrl, date: new Date().toJSON(), title }],
                     });
                     chrome.action.setBadgeText({ text: `${notes.length + 1}` });
@@ -108,7 +107,7 @@ chrome.runtime.onMessage.addListener((message, sender) => {
     }
 });
 
-chrome.storage.sync.get(NerorenClipboard, (result) => {
+chrome.storage.local.get(NerorenClipboard, (result) => {
     let notes = result.NerorenClipboard;
     if (!notes) {
         notes = [];

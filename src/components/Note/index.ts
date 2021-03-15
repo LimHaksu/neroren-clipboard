@@ -125,14 +125,14 @@ export const createNote = (note: NerorenClipboardType) => {
     removeButton.className = "button button-remove";
     removeButton.innerHTML = `<div class="remove"></div>`;
     removeButton.addEventListener("click", () => {
-        chrome.storage.sync.get(NerorenClipboard, (result) => {
+        chrome.storage.local.get(NerorenClipboard, (result) => {
             let notes = result.NerorenClipboard;
             if (notes) {
                 notes = notes.filter((note: NerorenClipboardType) => {
                     const noteDate = new Date(note.date);
                     return noteDate.getTime() !== date.getTime();
                 });
-                chrome.storage.sync.set({ NerorenClipboard: notes });
+                chrome.storage.local.set({ NerorenClipboard: notes });
                 chrome.action.setBadgeText({ text: notes.length > 0 ? `${notes.length}` : "" });
                 noteDom.remove();
                 popupBottomModal(ModalType.REMOVE, [note]);
