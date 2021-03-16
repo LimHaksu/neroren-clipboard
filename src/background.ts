@@ -15,6 +15,7 @@ interface Settings {
 }
 
 const ContextMenuItemId = "neroren-clipboard-save";
+const ContextMenuItemIdForPage = "neroren-clipboard-save-page";
 
 const getContextMenusTitle = (language: Language) => {
     const { CHINESE, ENGLISH, JAPANESE, KOREAN } = Language;
@@ -48,6 +49,11 @@ const setContextMenus = () => {
             title: getContextMenusTitle(settings.language),
             contexts: ["selection", "image", "link"],
         });
+        chrome.contextMenus.create({
+            id: ContextMenuItemIdForPage,
+            title: getContextMenusTitle(settings.language),
+            contexts: ["page"],
+        });
     });
 };
 
@@ -72,7 +78,7 @@ const addNewNote = (notes: Note[], newNote: Note) => {
 };
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-    if (info.menuItemId == ContextMenuItemId) {
+    if (info.menuItemId === ContextMenuItemId || info.menuItemId === ContextMenuItemIdForPage) {
         chrome.storage.local.get(NerorenClipboard, (result) => {
             let notes = result.NerorenClipboard;
             if (!notes) {
@@ -81,14 +87,17 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
             const { linkUrl, srcUrl, selectionText, pageUrl } = info;
             const { title } = tab as chrome.tabs.Tab;
             let data = null;
-            if (selectionText) {
-                data = { type: "text", content: selectionText };
-            } else if (srcUrl && srcUrl.substring(0, 10) !== "data:image") {
-                data = { type: "image", content: srcUrl };
-            } else if (linkUrl) {
-                data = { type: "link", content: linkUrl };
+            if (info.menuItemId === ContextMenuItemId) {
+                if (selectionText) {
+                    data = { type: "text", content: selectionText };
+                } else if (srcUrl && srcUrl.substring(0, 10) !== "data:image") {
+                    data = { type: "image", content: srcUrl };
+                } else if (linkUrl) {
+                    data = { type: "link", content: linkUrl };
+                }
+            } else if (info.menuItemId === ContextMenuItemIdForPage) {
+                data = { type: "link", content: pageUrl };
             }
-
             if (data) {
                 const newNote = { data, pageUrl, date: new Date().toJSON(), title };
                 addNewNote(notes, newNote);
