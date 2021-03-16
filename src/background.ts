@@ -95,10 +95,12 @@ chrome.runtime.onMessage.addListener((message, sender) => {
                         notes = [];
                     }
                     const data = { type: "text", content: selectionText };
+                    const newNote = { data, pageUrl, date: new Date().toJSON(), title };
                     chrome.storage.local.set({
-                        NerorenClipboard: [...notes, { data, pageUrl, date: new Date().toJSON(), title }],
+                        NerorenClipboard: [...notes, newNote],
                     });
                     chrome.action.setBadgeText({ text: `${notes.length + 1}` });
+                    chrome.runtime.sendMessage({ type: "createNote", note: newNote });
                 });
             }
         });

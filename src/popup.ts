@@ -60,3 +60,11 @@ chrome.storage.local.get(NerorenClipboard, (result) => {
         });
     }
 });
+
+chrome.runtime.onMessage.addListener((message) => {
+    const { type } = message;
+    if (type === "createNote") {
+        const { note } = message;
+        createNote(note);
+    }
+});
