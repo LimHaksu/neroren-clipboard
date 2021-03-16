@@ -46,12 +46,23 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
     contentWrapper.appendChild(InnerWrapper);
 
     const contentDom = document.createElement("div");
+
+    // grid info
+    const rowHeight = parseInt(window.getComputedStyle(noteWrapper).getPropertyValue("grid-auto-rows"));
+    const rowGap = parseInt(window.getComputedStyle(noteWrapper).getPropertyValue("grid-row-gap"));
+
     switch (type) {
         case "text":
             contentDom.innerText = content;
             break;
         case "image":
-            contentDom.innerHTML = `<img class="image" src="${content}"/>`;
+            const imageContent = document.createElement("img") as HTMLImageElement;
+            imageContent.className = "image";
+            imageContent.onload = () => {
+                resetHeight(noteWrapper, noteDom, rowGap, rowHeight);
+            };
+            imageContent.src = content;
+            contentDom.appendChild(imageContent);
             break;
         case "link":
             contentDom.innerHTML = `<a id="href-content" target="_blank" href="${content}"></a>`;
@@ -62,10 +73,6 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
             break;
     }
     InnerWrapper.appendChild(contentDom);
-
-    // grid info
-    const rowHeight = parseInt(window.getComputedStyle(noteWrapper).getPropertyValue("grid-auto-rows"));
-    const rowGap = parseInt(window.getComputedStyle(noteWrapper).getPropertyValue("grid-row-gap"));
 
     const numOfLines = settings.numOfLines;
     const lineHeight = 20;
