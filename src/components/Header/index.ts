@@ -32,13 +32,14 @@ export const setHeader = (language: Language) => {
         floatingButton.className = "button button-floating";
         floatingButton.innerHTML = '<div class="floating"></div>';
         floatingButton.addEventListener("click", () => {
-            const screenWidth = screen.width;
-            let width = 342;
-            const isScrollbarVisible = document.body.scrollHeight > document.body.clientHeight;
-            if (isScrollbarVisible) {
-                width += 16;
-            }
-            chrome.windows.create({ url: "/popup.html", width, type: "popup", left: screenWidth - width });
+            let width = 358;
+            chrome.windows.create({
+                url: "/popup.html",
+                width,
+                type: "popup",
+                left: screen.width,
+                height: screen.height,
+            });
             window.close();
         });
 
