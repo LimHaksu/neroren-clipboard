@@ -20,225 +20,226 @@ const resetHeight = (noteWrapper: HTMLElement, noteDom: HTMLElement, rowGap: num
 };
 
 export const createNote = (note: NerorenClipboardType, settings: Settings) => {
-    const noteWrapper = document.querySelector("#note-wrapper") as HTMLDivElement;
+    const noteWrapper: HTMLDivElement | null = document.querySelector("#note-wrapper");
+    if (noteWrapper) {
+        let { date } = note;
+        const { pageUrl, data, title, isPinned } = note;
+        date = new Date(date);
+        const noteDom = document.createElement("div");
+        noteDom.className = "note";
+        const { type, content } = data;
 
-    let { date } = note;
-    const { pageUrl, data, title, isPinned } = note;
-    date = new Date(date);
-    const noteDom = document.createElement("div");
-    noteDom.className = "note";
-    const { type, content } = data;
+        const pinDom = document.createElement("div");
+        pinDom.className = `pin-image ${isPinned ? "" : "dn"}`;
 
-    const pinDom = document.createElement("div");
-    pinDom.className = `pin-image ${isPinned ? "" : "dn"}`;
+        noteDom.appendChild(pinDom);
 
-    noteDom.appendChild(pinDom);
+        const contentWrapper = document.createElement("div");
+        contentWrapper.className = "content-wrapper";
+        noteDom.appendChild(contentWrapper);
+        const cornerShadow = document.createElement("div");
+        cornerShadow.className = "corner-shadow";
+        noteDom.appendChild(cornerShadow);
 
-    const contentWrapper = document.createElement("div");
-    contentWrapper.className = "content-wrapper";
-    noteDom.appendChild(contentWrapper);
-    const cornerShadow = document.createElement("div");
-    cornerShadow.className = "corner-shadow";
-    noteDom.appendChild(cornerShadow);
+        const InnerWrapper = document.createElement("div");
+        InnerWrapper.className = "content";
+        contentWrapper.appendChild(InnerWrapper);
 
-    const InnerWrapper = document.createElement("div");
-    InnerWrapper.className = "content";
-    contentWrapper.appendChild(InnerWrapper);
+        const contentDom = document.createElement("div");
 
-    const contentDom = document.createElement("div");
+        // grid info
+        const rowHeight = parseInt(window.getComputedStyle(noteWrapper).getPropertyValue("grid-auto-rows"));
+        const rowGap = parseInt(window.getComputedStyle(noteWrapper).getPropertyValue("grid-row-gap"));
 
-    // grid info
-    const rowHeight = parseInt(window.getComputedStyle(noteWrapper).getPropertyValue("grid-auto-rows"));
-    const rowGap = parseInt(window.getComputedStyle(noteWrapper).getPropertyValue("grid-row-gap"));
-
-    switch (type) {
-        case "text":
-            contentDom.innerText = content;
-            break;
-        case "image":
-            const imageContent = document.createElement("img") as HTMLImageElement;
-            imageContent.className = "image";
-            imageContent.onload = () => {
-                resetHeight(noteWrapper, noteDom, rowGap, rowHeight);
-            };
-            imageContent.src = content;
-            contentDom.appendChild(imageContent);
-            break;
-        case "link":
-            contentDom.innerHTML = `<a id="href-content" target="_blank" href="${content}"></a>`;
-            const href = contentDom.querySelector("#href-content");
-            href!.textContent = content;
-            break;
-        default:
-            break;
-    }
-    InnerWrapper.appendChild(contentDom);
-
-    const numOfLines = settings.numOfLines;
-    const lineHeight = 20;
-    const height = lineHeight * numOfLines;
-    let is_collapse = false;
-    setTimeout(() => {
-        if ((type === "text" || type === "link") && contentDom.getBoundingClientRect().height > height) {
-            is_collapse = true;
+        switch (type) {
+            case "text":
+                contentDom.innerText = content;
+                break;
+            case "image":
+                const imageContent = document.createElement("img") as HTMLImageElement;
+                imageContent.className = "image";
+                imageContent.onload = () => {
+                    resetHeight(noteWrapper, noteDom, rowGap, rowHeight);
+                };
+                imageContent.src = content;
+                contentDom.appendChild(imageContent);
+                break;
+            case "link":
+                contentDom.innerHTML = `<a id="href-content" target="_blank" href="${content}"></a>`;
+                const href = contentDom.querySelector("#href-content");
+                href!.textContent = content;
+                break;
+            default:
+                break;
         }
-        if (is_collapse) {
-            contentDom.classList.add("collapse");
-            contentDom.style.webkitLineClamp = `${numOfLines}`;
+        InnerWrapper.appendChild(contentDom);
 
-            const showText = getShowText(settings.language);
-            const showMore = document.createElement("div");
-            showMore.className = "show-more";
-            showMore.textContent = showText.more;
-            showMore.addEventListener("click", () => {
-                if (is_collapse) {
-                    contentDom.style.webkitLineClamp = "unset";
-                    showMore.textContent = showText.less;
-                } else {
-                    contentDom.style.webkitLineClamp = `${numOfLines}`;
-                    showMore.textContent = showText.more;
+        const numOfLines = settings.numOfLines;
+        const lineHeight = 20;
+        const height = lineHeight * numOfLines;
+        let is_collapse = false;
+        setTimeout(() => {
+            if ((type === "text" || type === "link") && contentDom.getBoundingClientRect().height > height) {
+                is_collapse = true;
+            }
+            if (is_collapse) {
+                contentDom.classList.add("collapse");
+                contentDom.style.webkitLineClamp = `${numOfLines}`;
+
+                const showText = getShowText(settings.language);
+                const showMore = document.createElement("div");
+                showMore.className = "show-more";
+                showMore.textContent = showText.more;
+                showMore.addEventListener("click", () => {
+                    if (is_collapse) {
+                        contentDom.style.webkitLineClamp = "unset";
+                        showMore.textContent = showText.less;
+                    } else {
+                        contentDom.style.webkitLineClamp = `${numOfLines}`;
+                        showMore.textContent = showText.more;
+                    }
+                    is_collapse = !is_collapse;
+
+                    // set height for grid
+                    resetHeight(noteWrapper, noteDom, rowGap, rowHeight);
+                });
+
+                InnerWrapper.appendChild(showMore);
+            }
+
+            // set height for grid
+            resetHeight(noteWrapper, noteDom, rowGap, rowHeight);
+        }, 0);
+
+        const buttonWrapper = document.createElement("div");
+        buttonWrapper.classList.add("button-wrapper");
+
+        const copyButton = document.createElement("div");
+        copyButton.className = "button button-copy";
+        copyButton.innerHTML = `<div class="copy"></div>`;
+        copyButton.addEventListener("click", async () => {
+            if (type === "image") {
+                try {
+                    const canvas = document.createElement("canvas");
+                    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+                    setCanvasImage(canvas, ctx, content, (blob: Blob) => {
+                        (navigator.clipboard as Clipboard).write!([
+                            new ClipboardItem({
+                                "image/png": blob,
+                            }),
+                        ]);
+                    });
+                    canvas.remove();
+                    popupBottomModal(ModalType.COPY, [note]);
+                } catch (error) {
+                    console.error(error.name, error.message);
                 }
-                is_collapse = !is_collapse;
+            } else {
+                const tempArea = document.createElement("textarea");
+                tempArea.value = content;
+                tempArea.style.position = "absolute";
+                tempArea.style.left = "-9999px";
+                document.body.appendChild(tempArea);
+                tempArea.select();
+                const isSuccessful = document.execCommand("copy");
+                document.body.removeChild(tempArea);
+                if (!isSuccessful) {
+                    console.error("copy failed");
+                }
+                popupBottomModal(ModalType.COPY, [note]);
+            }
+        });
 
-                // set height for grid
-                resetHeight(noteWrapper, noteDom, rowGap, rowHeight);
+        const removeButton = document.createElement("div");
+        removeButton.className = "button button-remove";
+        removeButton.innerHTML = `<div class="remove"></div>`;
+        removeButton.addEventListener("click", () => {
+            chrome.storage.local.get(NerorenClipboard, (result) => {
+                let notes = result.NerorenClipboard;
+                if (notes) {
+                    notes = notes.filter((note: NerorenClipboardType) => {
+                        const noteDate = new Date(note.date);
+                        return noteDate.getTime() !== date.getTime();
+                    });
+                    chrome.storage.local.set({ NerorenClipboard: notes });
+                    chrome.action.setBadgeText({ text: notes.length > 0 ? `${notes.length}` : "" });
+
+                    // remove inself
+                    noteDom.remove();
+                    popupBottomModal(ModalType.REMOVE, [note]);
+
+                    // synchronize other popups
+                    chrome.runtime.sendMessage({ type: "removed" });
+                }
+            });
+        });
+
+        const pinButton = document.createElement("div");
+        pinButton.className = "button button-pin";
+        pinButton.innerHTML = '<div class="pin"></div>';
+        pinButton.addEventListener("click", () => {
+            chrome.storage.local.get(NerorenClipboard, (result) => {
+                const notes: NerorenClipboardType[] = result[NerorenClipboard];
+                const noteIndex = notes.findIndex((note) => new Date(note.date).getTime() === date.getTime());
+                if (noteIndex >= 0) {
+                    const isPinned = !notes[noteIndex].isPinned;
+                    if (isPinned) {
+                        removeButton.setAttribute("disabled", "true");
+                        pinDom.classList.remove("dn");
+                    } else {
+                        removeButton.setAttribute("disabled", "false");
+                        pinDom.classList.add("dn");
+                    }
+                    notes[noteIndex].isPinned = isPinned;
+                    chrome.storage.local.set({ NerorenClipboard: notes });
+
+                    // synchronize other popups
+                    chrome.runtime.sendMessage({ type: "pinned" });
+                }
+            });
+        });
+
+        buttonWrapper.appendChild(copyButton);
+        buttonWrapper.appendChild(removeButton);
+        buttonWrapper.appendChild(pinButton);
+
+        if (type === "image") {
+            const downloadButton = document.createElement("div");
+            downloadButton.className = "button button-download";
+            downloadButton.innerHTML = `<div class='download'></div>`;
+            downloadButton.addEventListener("click", () => {
+                chrome.downloads.download({ url: content });
             });
 
-            InnerWrapper.appendChild(showMore);
+            buttonWrapper.appendChild(downloadButton);
         }
 
-        // set height for grid
-        resetHeight(noteWrapper, noteDom, rowGap, rowHeight);
-    }, 0);
+        noteDom.appendChild(buttonWrapper);
 
-    const buttonWrapper = document.createElement("div");
-    buttonWrapper.classList.add("button-wrapper");
+        const bottomWrapper = document.createElement("div");
+        contentWrapper.appendChild(bottomWrapper);
 
-    const copyButton = document.createElement("div");
-    copyButton.className = "button button-copy";
-    copyButton.innerHTML = `<div class="copy"></div>`;
-    copyButton.addEventListener("click", async () => {
-        if (type === "image") {
-            try {
-                const canvas = document.createElement("canvas");
-                const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-                setCanvasImage(canvas, ctx, content, (blob: Blob) => {
-                    (navigator.clipboard as Clipboard).write!([
-                        new ClipboardItem({
-                            "image/png": blob,
-                        }),
-                    ]);
-                });
-                canvas.remove();
-                popupBottomModal(ModalType.COPY, [note]);
-            } catch (error) {
-                console.error(error.name, error.message);
-            }
-        } else {
-            const tempArea = document.createElement("textarea");
-            tempArea.value = content;
-            tempArea.style.position = "absolute";
-            tempArea.style.left = "-9999px";
-            document.body.appendChild(tempArea);
-            tempArea.select();
-            const isSuccessful = document.execCommand("copy");
-            document.body.removeChild(tempArea);
-            if (!isSuccessful) {
-                console.error("copy failed");
-            }
-            popupBottomModal(ModalType.COPY, [note]);
-        }
-    });
+        const pageUrlDom = document.createElement("div");
+        pageUrlDom.innerHTML = `<span style="font-style:italic;"><a target="_blank" href="${pageUrl}"></a></span>`;
+        pageUrlDom.className = "from";
+        const urlHref = pageUrlDom.querySelector("a");
+        urlHref!.textContent = title;
+        bottomWrapper.appendChild(pageUrlDom);
 
-    const removeButton = document.createElement("div");
-    removeButton.className = "button button-remove";
-    removeButton.innerHTML = `<div class="remove"></div>`;
-    removeButton.addEventListener("click", () => {
-        chrome.storage.local.get(NerorenClipboard, (result) => {
-            let notes = result.NerorenClipboard;
-            if (notes) {
-                notes = notes.filter((note: NerorenClipboardType) => {
-                    const noteDate = new Date(note.date);
-                    return noteDate.getTime() !== date.getTime();
-                });
-                chrome.storage.local.set({ NerorenClipboard: notes });
-                chrome.action.setBadgeText({ text: notes.length > 0 ? `${notes.length}` : "" });
+        const timeDom = document.createElement("div");
+        timeDom.textContent = getTimeText(date, settings.language);
+        timeDom.className = "time";
+        bottomWrapper.appendChild(timeDom);
 
-                // remove inself
-                noteDom.remove();
-                popupBottomModal(ModalType.REMOVE, [note]);
-
-                // synchronize other popups
-                chrome.runtime.sendMessage({ type: "removed" });
-            }
-        });
-    });
-
-    const pinButton = document.createElement("div");
-    pinButton.className = "button button-pin";
-    pinButton.innerHTML = '<div class="pin"></div>';
-    pinButton.addEventListener("click", () => {
-        chrome.storage.local.get(NerorenClipboard, (result) => {
-            const notes: NerorenClipboardType[] = result[NerorenClipboard];
-            const noteIndex = notes.findIndex((note) => new Date(note.date).getTime() === date.getTime());
-            if (noteIndex >= 0) {
-                const isPinned = !notes[noteIndex].isPinned;
-                if (isPinned) {
-                    removeButton.setAttribute("disabled", "true");
-                    pinDom.classList.remove("dn");
-                } else {
-                    removeButton.setAttribute("disabled", "false");
-                    pinDom.classList.add("dn");
-                }
-                notes[noteIndex].isPinned = isPinned;
-                chrome.storage.local.set({ NerorenClipboard: notes });
-
-                // synchronize other popups
-                chrome.runtime.sendMessage({ type: "pinned" });
-            }
-        });
-    });
-
-    buttonWrapper.appendChild(copyButton);
-    buttonWrapper.appendChild(removeButton);
-    buttonWrapper.appendChild(pinButton);
-
-    if (type === "image") {
-        const downloadButton = document.createElement("div");
-        downloadButton.className = "button button-download";
-        downloadButton.innerHTML = `<div class='download'></div>`;
-        downloadButton.addEventListener("click", () => {
-            chrome.downloads.download({ url: content });
-        });
-
-        buttonWrapper.appendChild(downloadButton);
+        setTimeout(() => {
+            noteWrapper.style.display = "unset";
+            const noteHieght = noteDom.getBoundingClientRect().height;
+            const rowSpan = Math.ceil((noteHieght + rowGap) / (rowHeight + rowGap));
+            noteDom.style.gridRowEnd = `span ${rowSpan}`;
+            noteWrapper.style.display = "grid";
+        }, 0);
+        noteWrapper?.insertBefore(noteDom, noteWrapper.firstChild);
     }
-
-    noteDom.appendChild(buttonWrapper);
-
-    const bottomWrapper = document.createElement("div");
-    contentWrapper.appendChild(bottomWrapper);
-
-    const pageUrlDom = document.createElement("div");
-    pageUrlDom.innerHTML = `<span style="font-style:italic;"><a target="_blank" href="${pageUrl}"></a></span>`;
-    pageUrlDom.className = "from";
-    const urlHref = pageUrlDom.querySelector("a");
-    urlHref!.textContent = title;
-    bottomWrapper.appendChild(pageUrlDom);
-
-    const timeDom = document.createElement("div");
-    timeDom.textContent = getTimeText(date, settings.language);
-    timeDom.className = "time";
-    bottomWrapper.appendChild(timeDom);
-
-    setTimeout(() => {
-        noteWrapper.style.display = "unset";
-        const noteHieght = noteDom.getBoundingClientRect().height;
-        const rowSpan = Math.ceil((noteHieght + rowGap) / (rowHeight + rowGap));
-        noteDom.style.gridRowEnd = `span ${rowSpan}`;
-        noteWrapper.style.display = "grid";
-    }, 0);
-    noteWrapper?.insertBefore(noteDom, noteWrapper.firstChild);
 };
 
 const getTimeText = (date: Date, language: Language) => {

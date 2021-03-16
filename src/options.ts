@@ -8,6 +8,7 @@ import {
     getToggleMessageText,
     getLineSettingMessageText,
     Language,
+    getHeaderContent,
 } from "./libs/language";
 import { NerorenClipboardSettings, setSettings } from "./popup";
 import "./options.scss";
@@ -28,11 +29,13 @@ chrome.storage.sync.get(NerorenClipboardSettings, (result) => {
 });
 
 export const rerenderAfterLanguageChange = (language: Language) => {
+    const title = document.head.querySelector("title");
     const settingsHeader = document.querySelector("#settings-header");
     const languageLabel = document.querySelector("#language-label");
     const toggleMessage = document.querySelector("#toggle-message");
     const lineMessage = document.querySelector("#line-message");
 
+    title!.textContent = `${getHeaderContent(language)} ${getSettingsHeader(language)}`;
     settingsHeader!.textContent = getSettingsHeader(language);
     languageLabel!.textContent = getSelectLabel(language);
     toggleMessage!.textContent = getToggleMessageText(language);

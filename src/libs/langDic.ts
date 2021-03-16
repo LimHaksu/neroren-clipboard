@@ -23,7 +23,7 @@ const langDic: { [key: string]: contentsByLanguage } = {
         settingsHeader: "设定",
         selectLabel: "语言",
         optionText: "中文",
-        toggleMessageText: "复制时保存到剪贴板",
+        toggleMessageText: "复制时保存到剪贴板 (ctrl/cmd+c)",
         lineSettingMessageText: "内容太长时默认显示的行数",
         topModal: "您想清除所有笔记吗?",
         bottomModalCopy: "已复制",
