@@ -35,6 +35,7 @@ export const setHeader = (language: Language) => {
             const screenWidth = screen.width;
             const width = 358;
             chrome.windows.create({ url: "/popup.html", width, type: "popup", left: screenWidth - width });
+            window.close();
         });
 
         buttonWrapper.appendChild(clearButton);
