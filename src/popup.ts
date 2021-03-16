@@ -52,6 +52,7 @@ chrome.storage.sync.get(NerorenClipboardSettings, (result) => {
     }
 
     setHeader(settings.language);
+    initNotes(settings);
 });
 
 const initNotes = (settings: Settings) => {
@@ -64,8 +65,6 @@ const initNotes = (settings: Settings) => {
         }
     });
 };
-
-initNotes(getSettings());
 
 const removeAllNotes = () => {
     const noteWrapper = document.querySelector("#note-wrapper");
