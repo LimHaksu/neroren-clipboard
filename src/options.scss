@@ -24,10 +24,10 @@ body * {
     height: 80px;
     background-image: url("./assets/modal_cat.png");
     background-size: cover;
-    transform: translate(-150px, -265px) rotate(-180deg);
+    transform: translate(-150px, -295px) rotate(-180deg);
 
     &.visible {
-        transform: translate(-150px, -185px) rotate(-180deg);
+        transform: translate(-150px, -215px) rotate(-180deg);
         transition: transform 1s;
     }
 }
