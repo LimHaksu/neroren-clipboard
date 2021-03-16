@@ -15,6 +15,7 @@ export interface NerorenClipboardType {
     pageUrl: string;
     date: Date;
     title: string;
+    isPinned: boolean;
 }
 
 export interface Settings {
@@ -57,8 +58,8 @@ const initNotes = (settings: Settings) => {
     chrome.storage.local.get(NerorenClipboard, (result) => {
         const notes: NerorenClipboardType[] = result[NerorenClipboard];
         if (notes) {
-            notes.forEach(({ data, pageUrl, date, title }) => {
-                createNote({ data, pageUrl, date, title }, settings);
+            notes.forEach((note) => {
+                createNote(note, settings);
             });
         }
     });
@@ -75,7 +76,6 @@ const removeAllNotes = () => {
 };
 
 chrome.runtime.onMessage.addListener((message) => {
-    console.log(message);
     chrome.storage.sync.get(NerorenClipboardSettings, (result) => {
         const settings: Settings = result[NerorenClipboardSettings];
         const { type } = message;
@@ -91,6 +91,8 @@ chrome.runtime.onMessage.addListener((message) => {
                 initNotes(settings);
                 break;
             case "removed":
+            case "changeLine":
+            case "pinned":
                 removeAllNotes();
                 initNotes(settings);
                 break;

@@ -22,15 +22,15 @@
 }
 
 .button-clear {
-    background-color: rgb(224, 31, 79, 0.425);
+    background-color: $light-pink;
 }
 
 .button-settings {
-    background-color: rgba(31, 137, 224, 0.425);
+    background-color: $light-blue;
 }
 
 .button-floating {
-    background-color: rgba(31, 224, 176, 0.425);
+    background-color: $light-green;
 }
 
 .clear,

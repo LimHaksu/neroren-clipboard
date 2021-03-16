@@ -21,6 +21,9 @@ export const renderLineSetting = () => {
         const settings = getSettings();
         settings.numOfLines = newNum;
         setSettings(settings);
+
+        // synchronize other popups
+        chrome.runtime.sendMessage({ typs: "changeLine" });
     });
     downButton?.addEventListener("click", () => {
         const newNum = +numDom?.textContent! - 1;
@@ -29,6 +32,9 @@ export const renderLineSetting = () => {
             const settings = getSettings();
             settings.numOfLines = newNum;
             setSettings(settings);
+
+            // synchronize other popups
+            chrome.runtime.sendMessage({ typs: "changeLine" });
         }
     });
 };

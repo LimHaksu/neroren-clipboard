@@ -11,15 +11,28 @@ interface Clipboard {
     write?(notes: Array<ClipboardItem>): Promise<void>;
 }
 
+const resetHeight = (noteWrapper: HTMLElement, noteDom: HTMLElement, rowGap: number, rowHeight: number) => {
+    noteWrapper.style.display = "unset";
+    const noteHieght = noteDom.getBoundingClientRect().height;
+    const rowSpan = Math.ceil((noteHieght + rowGap) / (rowHeight + rowGap));
+    noteDom.style.gridRowEnd = `span ${rowSpan}`;
+    noteWrapper.style.display = "grid";
+};
+
 export const createNote = (note: NerorenClipboardType, settings: Settings) => {
     const noteWrapper = document.querySelector("#note-wrapper") as HTMLDivElement;
 
     let { date } = note;
-    const { pageUrl, data, title } = note;
+    const { pageUrl, data, title, isPinned } = note;
     date = new Date(date);
     const noteDom = document.createElement("div");
     noteDom.className = "note";
     const { type, content } = data;
+
+    const pinDom = document.createElement("div");
+    pinDom.className = `pin-image ${isPinned ? "" : "dn"}`;
+
+    noteDom.appendChild(pinDom);
 
     const contentWrapper = document.createElement("div");
     contentWrapper.className = "content-wrapper";
@@ -78,16 +91,17 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
                     contentDom.style.webkitLineClamp = `${numOfLines}`;
                     showMore.textContent = showText.more;
                 }
-                noteWrapper.style.display = "unset";
-                const noteHieght = noteDom.getBoundingClientRect().height;
-                const rowSpan = Math.ceil((noteHieght + rowGap) / (rowHeight + rowGap));
-                noteDom.style.gridRowEnd = `span ${rowSpan}`;
-                noteWrapper.style.display = "grid";
                 is_collapse = !is_collapse;
+
+                // set height for grid
+                resetHeight(noteWrapper, noteDom, rowGap, rowHeight);
             });
 
             InnerWrapper.appendChild(showMore);
         }
+
+        // set height for grid
+        resetHeight(noteWrapper, noteDom, rowGap, rowHeight);
     }, 0);
 
     const buttonWrapper = document.createElement("div");
@@ -153,8 +167,34 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
         });
     });
 
+    const pinButton = document.createElement("div");
+    pinButton.className = "button button-pin";
+    pinButton.innerHTML = '<div class="pin"></div>';
+    pinButton.addEventListener("click", () => {
+        chrome.storage.local.get(NerorenClipboard, (result) => {
+            const notes: NerorenClipboardType[] = result[NerorenClipboard];
+            const noteIndex = notes.findIndex((note) => new Date(note.date).getTime() === date.getTime());
+            if (noteIndex >= 0) {
+                const isPinned = !notes[noteIndex].isPinned;
+                if (isPinned) {
+                    removeButton.setAttribute("disabled", "true");
+                    pinDom.classList.remove("dn");
+                } else {
+                    removeButton.setAttribute("disabled", "false");
+                    pinDom.classList.add("dn");
+                }
+                notes[noteIndex].isPinned = isPinned;
+                chrome.storage.local.set({ NerorenClipboard: notes });
+
+                // synchronize other popups
+                chrome.runtime.sendMessage({ type: "pinned" });
+            }
+        });
+    });
+
     buttonWrapper.appendChild(copyButton);
     buttonWrapper.appendChild(removeButton);
+    buttonWrapper.appendChild(pinButton);
 
     if (type === "image") {
         const downloadButton = document.createElement("div");
@@ -167,19 +207,22 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
         buttonWrapper.appendChild(downloadButton);
     }
 
-    contentWrapper.appendChild(buttonWrapper);
+    noteDom.appendChild(buttonWrapper);
+
+    const bottomWrapper = document.createElement("div");
+    contentWrapper.appendChild(bottomWrapper);
 
     const pageUrlDom = document.createElement("div");
     pageUrlDom.innerHTML = `<span style="font-style:italic;"><a target="_blank" href="${pageUrl}"></a></span>`;
     pageUrlDom.className = "from";
     const urlHref = pageUrlDom.querySelector("a");
     urlHref!.textContent = title;
-    noteDom.appendChild(pageUrlDom);
+    bottomWrapper.appendChild(pageUrlDom);
 
     const timeDom = document.createElement("div");
     timeDom.textContent = getTimeText(date, settings.language);
     timeDom.className = "time";
-    noteDom.appendChild(timeDom);
+    bottomWrapper.appendChild(timeDom);
 
     setTimeout(() => {
         noteWrapper.style.display = "unset";

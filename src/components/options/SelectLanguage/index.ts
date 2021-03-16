@@ -24,6 +24,8 @@ export const renderLanguageSelect = () => {
         settings.language = language;
         setSettings(settings);
         rerenderAfterLanguageChange(language);
+
+        // synchronize other popups
         chrome.runtime.sendMessage({ type: "changePopupLanguage" });
     });
 

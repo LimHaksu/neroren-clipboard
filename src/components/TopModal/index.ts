@@ -1,4 +1,4 @@
-import { NerorenClipboard, getSettings } from "../../popup";
+import { NerorenClipboard, getSettings, NerorenClipboardType } from "../../popup";
 import { getTopModalContent, getConfirmText } from "../../libs/language";
 import { ModalType, popupBottomModal } from "../BottomModal";
 import "./topModal.scss";
@@ -11,17 +11,23 @@ const noButton = el?.querySelector("#no-button") as HTMLButtonElement;
 yesButton?.addEventListener("click", () => {
     const noteDoms = document.getElementsByClassName("note");
     chrome.storage.local.get(NerorenClipboard, (result) => {
-        const notes = result.NerorenClipboard;
-        chrome.storage.local.set({ NerorenClipboard: [] });
+        const notes: NerorenClipboardType[] = result.NerorenClipboard;
+        const removedNotes = notes.filter((note) => !note.isPinned);
+        const remainedNotes = notes.filter((note) => note.isPinned);
+        chrome.storage.local.set({ NerorenClipboard: remainedNotes });
         chrome.action.setBadgeText({ text: "" });
         Array.from(noteDoms).forEach((noteDom) => {
-            noteDom.remove();
+            const pinImage = noteDom.querySelector(".pin-image");
+            if (pinImage?.classList.contains("dn")) {
+                noteDom.remove();
+            }
         });
-        el?.classList.remove("visible");
-        popupBottomModal(ModalType.REMOVE, notes);
+        popupBottomModal(ModalType.REMOVE, removedNotes);
 
         // synchronize other popups
-        chrome.runtime.sendMessage({ type: "removed", notes });
+        chrome.runtime.sendMessage({ type: "removed", removedNotes });
+
+        el?.classList.remove("visible");
     });
 });
 

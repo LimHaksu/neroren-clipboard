@@ -2,6 +2,7 @@
 
 .note {
     position: relative;
+    display: flex;
     padding: 5px;
     width: 300px;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.4);
@@ -35,13 +36,28 @@
     transition: opacity 0.4s;
 }
 
+.pin-image {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-image: url("../../assets/pin-image.png");
+    background-size: cover;
+    transform: translate(-15px, -13px);
+
+    &.dn {
+        display: none;
+    }
+}
+
 .content-wrapper {
     display: flex;
+    width: 260px;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .content {
-    width: 240px;
-    font-size: 0.9rem;
+    font-size: 1rem;
     padding: 10px;
     word-wrap: break-word;
 }
@@ -52,7 +68,7 @@
     overflow: hidden;
 }
 
-.content a {
+.content-wrapper > a {
     display: block;
     width: 240px;
     word-wrap: break-word;
@@ -61,19 +77,20 @@
 .show-more {
     cursor: pointer;
     margin-top: 5px;
-    color: $light-blue;
+    color: $dark-blue;
 }
 
 .from {
-    width: 280px;
+    width: 240px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 0.7.8rem;
+    font-size: 0.8rem;
     margin: 5px 10px 5px 10px;
 }
 
 .time {
+    width: 240px;
     margin: 0 10px 5px 10px;
 }
 
@@ -103,9 +120,14 @@
     background-color: $light-green;
 }
 
+.button-pin {
+    background-color: rgba(255, 22, 22, 0.425);
+}
+
 .copy,
 .remove,
-.download {
+.download,
+.pin {
     width: 20px;
     height: 20px;
     background-size: cover;
@@ -121,6 +143,10 @@
 
 .download {
     background-image: url("../../assets/download.png");
+}
+
+.pin {
+    background-image: url("../../assets/pin.png");
 }
 
 .image {
