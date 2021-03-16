@@ -14,26 +14,30 @@ export const setHeader = (language: Language) => {
         header.appendChild(textDom);
         header.appendChild(buttonWrapper);
 
-        const clearButton = document.createElement("div");
+        const clearButton = document.createElement("button");
         clearButton.className = "button button-clear";
         clearButton.innerHTML = `<div class="clear"></div>`;
         clearButton.addEventListener("click", () => {
             popupTopModal();
         });
 
-        const settingsButton = document.createElement("div");
+        const settingsButton = document.createElement("button");
         settingsButton.className = "button button-settings";
         settingsButton.innerHTML = `<div class="settings"></div>`;
         settingsButton.addEventListener("click", () => {
             chrome.windows.create({ url: "/options.html" });
         });
 
-        const floatingButton = document.createElement("div");
+        const floatingButton = document.createElement("button");
         floatingButton.className = "button button-floating";
         floatingButton.innerHTML = '<div class="floating"></div>';
         floatingButton.addEventListener("click", () => {
             const screenWidth = screen.width;
-            const width = 358;
+            let width = 342;
+            const isScrollbarVisible = document.body.scrollHeight > document.body.clientHeight;
+            if (isScrollbarVisible) {
+                width += 16;
+            }
             chrome.windows.create({ url: "/popup.html", width, type: "popup", left: screenWidth - width });
             window.close();
         });

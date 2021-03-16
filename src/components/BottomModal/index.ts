@@ -49,7 +49,7 @@ export const popupBottomModal = (type: ModalType, notes: NerorenClipboardType[])
             break;
         case ModalType.REMOVE:
             el.textContent = getBottomModalContent(settings.language, ModalType.REMOVE);
-            const undoButton = document.createElement("div");
+            const undoButton = document.createElement("button");
             undoButton.className = "button button-undo";
             undoButton.innerHTML = `<div class="undo"></div>`;
             undoButton.addEventListener("click", () => {

@@ -50,7 +50,10 @@ export const popupTopModal = () => {
 };
 
 export const changeTopModalLanguage = (language: Language) => {
-    if (el) {
-        el.textContent = getTopModalContent(language);
+    if (content) {
+        content.textContent = getTopModalContent(language);
+        const confirmText = getConfirmText(language);
+        yesButton!.innerText = confirmText.yes;
+        noButton!.innerText = confirmText.no;
     }
 };

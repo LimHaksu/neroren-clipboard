@@ -8,17 +8,11 @@
     font-size: 1.1rem;
     font-weight: bold;
     color: $light-black;
-    margin: 8px 10px 10px 8px;
+    margin: 8px 5px 10px 8px;
 }
 
 .header-button-wrapper {
     display: flex;
-}
-
-.button-clear,
-.button-settings,
-.button-floating {
-    margin-right: 0;
 }
 
 .button-clear {

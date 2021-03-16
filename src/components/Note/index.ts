@@ -114,7 +114,7 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
         const buttonWrapper = document.createElement("div");
         buttonWrapper.classList.add("button-wrapper");
 
-        const copyButton = document.createElement("div");
+        const copyButton = document.createElement("button");
         copyButton.className = "button button-copy";
         copyButton.innerHTML = `<div class="copy"></div>`;
         copyButton.addEventListener("click", async () => {
@@ -150,8 +150,8 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
             }
         });
 
-        const removeButton = document.createElement("div");
-        removeButton.className = "button button-remove";
+        const removeButton = document.createElement("button");
+        removeButton.className = `button button-remove ${isPinned ? "dn" : ""}`;
         removeButton.innerHTML = `<div class="remove"></div>`;
         removeButton.addEventListener("click", () => {
             chrome.storage.local.get(NerorenClipboard, (result) => {
@@ -174,7 +174,7 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
             });
         });
 
-        const pinButton = document.createElement("div");
+        const pinButton = document.createElement("button");
         pinButton.className = "button button-pin";
         pinButton.innerHTML = '<div class="pin"></div>';
         pinButton.addEventListener("click", () => {
@@ -184,10 +184,10 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
                 if (noteIndex >= 0) {
                     const isPinned = !notes[noteIndex].isPinned;
                     if (isPinned) {
-                        removeButton.setAttribute("disabled", "true");
+                        removeButton.classList.add("dn");
                         pinDom.classList.remove("dn");
                     } else {
-                        removeButton.setAttribute("disabled", "false");
+                        removeButton.classList.remove("dn");
                         pinDom.classList.add("dn");
                     }
                     notes[noteIndex].isPinned = isPinned;
