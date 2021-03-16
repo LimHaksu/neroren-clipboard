@@ -254,7 +254,7 @@ const getTimeText = (date: Date, language: Language) => {
     seconds = insertLeadingZero(seconds);
     const countryMap = {
         CHINESE: `${year}年 ${month}月 ${dateText}日 ${hours} : ${minutes} : ${seconds}`,
-        ENGLISH: `${month}/${dateText}/${year} ${hours}:${minutes}:${seconds}`,
+        ENGLISH: `${month}/${dateText}/${year} ${hours} : ${minutes} : ${seconds}`,
         JAPANESE: `${year}年 ${month}月 ${dateText}日 ${hours} : ${minutes} : ${seconds}`,
         KOREAN: `${year}년 ${month}월 ${dateText}일 ${hours} : ${minutes} : ${seconds}`,
     };
