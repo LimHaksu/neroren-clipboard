@@ -32,7 +32,9 @@ export const setHeader = (language: Language) => {
         floatingButton.className = "button button-floating";
         floatingButton.innerHTML = '<div class="floating"></div>';
         floatingButton.addEventListener("click", () => {
-            chrome.windows.create({ url: "/popup.html", width: 358, type: "popup" });
+            const screenWidth = screen.width;
+            const width = 358;
+            chrome.windows.create({ url: "/popup.html", width, type: "popup", left: screenWidth - width });
         });
 
         buttonWrapper.appendChild(clearButton);
