@@ -63,8 +63,11 @@ export const popupBottomModal = (type: ModalType, notes: NerorenClipboardType[])
                     chrome.action.setBadgeText({ text: newNotes.length > 0 ? `${newNotes.length}` : "" });
 
                     notes.forEach((note) => {
-                        createNote(note);
+                        createNote(note, settings);
                     });
+
+                    // synchronize other popups.
+                    chrome.runtime.sendMessage({ type: "restore", notes });
                 });
                 el.classList.remove("visible");
             });

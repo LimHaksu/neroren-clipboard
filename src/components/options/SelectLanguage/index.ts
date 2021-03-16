@@ -24,6 +24,7 @@ export const renderLanguageSelect = () => {
         settings.language = language;
         setSettings(settings);
         rerenderAfterLanguageChange(language);
+        chrome.runtime.sendMessage({ type: "changePopupLanguage" });
     });
 
     const label = document.querySelector("#language-label");

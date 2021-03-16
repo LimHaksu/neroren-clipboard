@@ -53,6 +53,24 @@ const setContextMenus = () => {
 
 setContextMenus();
 
+interface Note {
+    data: {
+        type: string;
+        content: string;
+    };
+    pageUrl: string;
+    date: string;
+    title: string | undefined;
+}
+
+const addNewNote = (notes: Note[], newNote: Note) => {
+    chrome.storage.local.set({
+        NerorenClipboard: [...notes, newNote],
+    });
+    chrome.action.setBadgeText({ text: `${notes.length + 1}` });
+    chrome.runtime.sendMessage({ type: "createNote", note: newNote });
+};
+
 chrome.contextMenus.onClicked.addListener((info, tab) => {
     if (info.menuItemId == ContextMenuItemId) {
         chrome.storage.local.get(NerorenClipboard, (result) => {
@@ -72,10 +90,8 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
             }
 
             if (data) {
-                chrome.storage.local.set({
-                    NerorenClipboard: [...notes, { data, pageUrl, date: new Date().toJSON(), title }],
-                });
-                chrome.action.setBadgeText({ text: `${notes.length + 1}` });
+                const newNote = { data, pageUrl, date: new Date().toJSON(), title };
+                addNewNote(notes, newNote);
             }
         });
     }
@@ -95,12 +111,8 @@ chrome.runtime.onMessage.addListener((message, sender) => {
                         notes = [];
                     }
                     const data = { type: "text", content: selectionText };
-                    const newNote = { data, pageUrl, date: new Date().toJSON(), title };
-                    chrome.storage.local.set({
-                        NerorenClipboard: [...notes, newNote],
-                    });
-                    chrome.action.setBadgeText({ text: `${notes.length + 1}` });
-                    chrome.runtime.sendMessage({ type: "createNote", note: newNote });
+                    const newNote = { data, pageUrl: pageUrl ? pageUrl : "", date: new Date().toJSON(), title };
+                    addNewNote(notes, newNote);
                 });
             }
         });

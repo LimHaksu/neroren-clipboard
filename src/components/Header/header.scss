@@ -4,15 +4,21 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 310px;
-    font-size: 1.2rem;
+    min-width: 310px;
+    font-size: 1.1rem;
     font-weight: bold;
     color: $light-black;
-    margin: 8px 8px 0 8px;
+    margin: 8px 10px 10px 8px;
 }
 
 .header-button-wrapper {
     display: flex;
+}
+
+.button-clear,
+.button-settings,
+.button-floating {
+    margin-right: 0;
 }
 
 .button-clear {
@@ -21,11 +27,15 @@
 
 .button-settings {
     background-color: rgba(31, 137, 224, 0.425);
-    margin-right: 0;
+}
+
+.button-floating {
+    background-color: rgba(31, 224, 176, 0.425);
 }
 
 .clear,
-.settings {
+.settings,
+.floating {
     width: 20px;
     height: 20px;
     background-size: cover;
@@ -37,4 +47,8 @@
 
 .settings {
     background-image: url("../../assets/settings.png");
+}
+
+.floating {
+    background-image: url("../../assets/floating.png");
 }

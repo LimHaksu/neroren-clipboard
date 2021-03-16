@@ -19,6 +19,9 @@ yesButton?.addEventListener("click", () => {
         });
         el?.classList.remove("visible");
         popupBottomModal(ModalType.REMOVE, notes);
+
+        // synchronize other popups
+        chrome.runtime.sendMessage({ type: "removed", notes });
     });
 });
 
@@ -38,4 +41,10 @@ export const popupTopModal = () => {
     noButton!.innerText = confirmText.no;
 
     el?.classList.add("visible");
+};
+
+export const changeTopModalLanguage = (language: Language) => {
+    if (el) {
+        el.textContent = getTopModalContent(language);
+    }
 };

@@ -1,4 +1,4 @@
-import { NerorenClipboardType, NerorenClipboard, getSettings } from "../../popup";
+import { NerorenClipboardType, NerorenClipboard, Settings } from "../../popup";
 import { Language, getShowText } from "../../libs/language";
 import { ModalType, popupBottomModal } from "../BottomModal";
 import "./note.scss";
@@ -11,8 +11,8 @@ interface Clipboard {
     write?(notes: Array<ClipboardItem>): Promise<void>;
 }
 
-export const createNote = (note: NerorenClipboardType) => {
-    const noteWrapper = document.querySelector("#note-wrapper");
+export const createNote = (note: NerorenClipboardType, settings: Settings) => {
+    const noteWrapper = document.querySelector("#note-wrapper") as HTMLDivElement;
 
     let { date } = note;
     const { pageUrl, data, title } = note;
@@ -50,7 +50,10 @@ export const createNote = (note: NerorenClipboardType) => {
     }
     InnerWrapper.appendChild(contentDom);
 
-    const settings = getSettings();
+    // grid info
+    const rowHeight = parseInt(window.getComputedStyle(noteWrapper).getPropertyValue("grid-auto-rows"));
+    const rowGap = parseInt(window.getComputedStyle(noteWrapper).getPropertyValue("grid-row-gap"));
+
     const numOfLines = settings.numOfLines;
     const lineHeight = 20;
     const height = lineHeight * numOfLines;
@@ -75,6 +78,11 @@ export const createNote = (note: NerorenClipboardType) => {
                     contentDom.style.webkitLineClamp = `${numOfLines}`;
                     showMore.textContent = showText.more;
                 }
+                noteWrapper.style.display = "unset";
+                const noteHieght = noteDom.getBoundingClientRect().height;
+                const rowSpan = Math.ceil((noteHieght + rowGap) / (rowHeight + rowGap));
+                noteDom.style.gridRowEnd = `span ${rowSpan}`;
+                noteWrapper.style.display = "grid";
                 is_collapse = !is_collapse;
             });
 
@@ -134,8 +142,13 @@ export const createNote = (note: NerorenClipboardType) => {
                 });
                 chrome.storage.local.set({ NerorenClipboard: notes });
                 chrome.action.setBadgeText({ text: notes.length > 0 ? `${notes.length}` : "" });
+
+                // remove inself
                 noteDom.remove();
                 popupBottomModal(ModalType.REMOVE, [note]);
+
+                // synchronize other popups
+                chrome.runtime.sendMessage({ type: "removed" });
             }
         });
     });
@@ -168,6 +181,13 @@ export const createNote = (note: NerorenClipboardType) => {
     timeDom.className = "time";
     noteDom.appendChild(timeDom);
 
+    setTimeout(() => {
+        noteWrapper.style.display = "unset";
+        const noteHieght = noteDom.getBoundingClientRect().height;
+        const rowSpan = Math.ceil((noteHieght + rowGap) / (rowHeight + rowGap));
+        noteDom.style.gridRowEnd = `span ${rowSpan}`;
+        noteWrapper.style.display = "grid";
+    }, 0);
     noteWrapper?.insertBefore(noteDom, noteWrapper.firstChild);
 };
 

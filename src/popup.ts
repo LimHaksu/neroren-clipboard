@@ -1,5 +1,6 @@
 import { createNote } from "./components/Note";
-import { setHeaderContent } from "./components/Header";
+import { setHeader, changeHeaderLanguage } from "./components/Header";
+import { changeTopModalLanguage } from "./components/TopModal";
 import { Language } from "./libs/language";
 import "./popup.scss";
 
@@ -49,22 +50,57 @@ chrome.storage.sync.get(NerorenClipboardSettings, (result) => {
         chrome.storage.sync.set({ NerorenClipboardSettings: newSettings });
     }
 
-    setHeaderContent(settings.language);
+    setHeader(settings.language);
 });
 
-chrome.storage.local.get(NerorenClipboard, (result) => {
-    const notes: NerorenClipboardType[] = result[NerorenClipboard];
-    if (notes) {
-        notes.forEach(({ data, pageUrl, date, title }) => {
-            createNote({ data, pageUrl, date, title });
-        });
+const initNotes = (settings: Settings) => {
+    chrome.storage.local.get(NerorenClipboard, (result) => {
+        const notes: NerorenClipboardType[] = result[NerorenClipboard];
+        if (notes) {
+            notes.forEach(({ data, pageUrl, date, title }) => {
+                createNote({ data, pageUrl, date, title }, settings);
+            });
+        }
+    });
+};
+
+initNotes(getSettings());
+
+const removeAllNotes = () => {
+    const noteWrapper = document.querySelector("#note-wrapper");
+    while (noteWrapper?.firstChild) {
+        const lastChild = noteWrapper.lastChild!;
+        noteWrapper.removeChild(lastChild);
     }
-});
+};
 
 chrome.runtime.onMessage.addListener((message) => {
-    const { type } = message;
-    if (type === "createNote") {
-        const { note } = message;
-        createNote(note);
-    }
+    console.log(message);
+    chrome.storage.sync.get(NerorenClipboardSettings, (result) => {
+        const settings: Settings = result[NerorenClipboardSettings];
+        const { type } = message;
+        switch (type) {
+            case "createNote":
+                const { note } = message;
+                createNote(note, settings);
+                break;
+            case "changePopupLanguage":
+                changeHeaderLanguage(settings.language);
+                changeTopModalLanguage(settings.language);
+                removeAllNotes();
+                initNotes(settings);
+                break;
+            case "removed":
+                removeAllNotes();
+                initNotes(settings);
+                break;
+            case "restore":
+                const { notes } = message;
+                notes.forEach((note: NerorenClipboardType) => {
+                    createNote(note, settings);
+                });
+            default:
+                break;
+        }
+    });
 });
