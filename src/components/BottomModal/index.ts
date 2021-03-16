@@ -1,5 +1,4 @@
-import { NerorenClipboardType, NerorenClipboard, getSettings } from "../../popup";
-import { createNote } from "../Note";
+import { NerorenClipboardType, NerorenClipboard, getSettings, removeAllNotes, initNotes } from "../../popup";
 import { getBottomModalContent } from "../../libs/language";
 import "./bottomModal.scss";
 
@@ -13,7 +12,7 @@ export enum ModalType {
  *
  * @param {string} type
  */
-export const popupBottomModal = (type: ModalType, notes: NerorenClipboardType[]) => {
+export const popupBottomModal = (type: ModalType, notes: NerorenClipboardType[], removedIndexes: number[]) => {
     const el = document.createElement("div");
     el.id = "bottom-modal";
     el.className = "bottom-modal";
@@ -54,20 +53,32 @@ export const popupBottomModal = (type: ModalType, notes: NerorenClipboardType[])
             undoButton.innerHTML = `<div class="undo"></div>`;
             undoButton.addEventListener("click", () => {
                 chrome.storage.local.get(NerorenClipboard, (result) => {
-                    let prevNotes = result[NerorenClipboard];
+                    let prevNotes: NerorenClipboardType[] | undefined = result[NerorenClipboard];
                     if (!prevNotes) {
                         prevNotes = [];
                     }
-                    const newNotes = [...prevNotes, ...notes];
+                    let newNotes = Array.from(Array(prevNotes.length + notes.length));
+                    let indexOfRemovedIndex = 0;
+                    let indexOfPrevNotes = 0;
+
+                    newNotes = newNotes.map((_, i) => {
+                        const removeIndex = removedIndexes[indexOfRemovedIndex];
+                        if (removeIndex === i) {
+                            indexOfRemovedIndex++;
+                            return notes[indexOfRemovedIndex - 1];
+                        }
+                        indexOfPrevNotes++;
+                        return (prevNotes as NerorenClipboardType[])[indexOfPrevNotes - 1];
+                    });
+                    console.log(notes, prevNotes, newNotes);
                     chrome.storage.local.set({ NerorenClipboard: newNotes });
                     chrome.action.setBadgeText({ text: newNotes.length > 0 ? `${newNotes.length}` : "" });
 
-                    notes.forEach((note) => {
-                        createNote(note, settings);
-                    });
+                    removeAllNotes();
+                    initNotes(settings);
 
                     // synchronize other popups.
-                    chrome.runtime.sendMessage({ type: "restore", notes });
+                    chrome.runtime.sendMessage({ type: "restore" });
                 });
                 el.classList.remove("visible");
             });

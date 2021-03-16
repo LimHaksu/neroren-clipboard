@@ -55,7 +55,7 @@ chrome.storage.sync.get(NerorenClipboardSettings, (result) => {
     initNotes(settings);
 });
 
-const initNotes = (settings: Settings) => {
+export const initNotes = (settings: Settings) => {
     chrome.storage.local.get(NerorenClipboard, (result) => {
         const notes: NerorenClipboardType[] = result[NerorenClipboard];
         if (notes) {
@@ -66,7 +66,7 @@ const initNotes = (settings: Settings) => {
     });
 };
 
-const removeAllNotes = () => {
+export const removeAllNotes = () => {
     const noteWrapper = document.querySelector("#note-wrapper");
     while (noteWrapper?.firstChild) {
         const lastChild = noteWrapper.lastChild!;
@@ -92,14 +92,10 @@ chrome.runtime.onMessage.addListener((message) => {
             case "removed":
             case "changeLine":
             case "pinned":
+            case "restore":
                 removeAllNotes();
                 initNotes(settings);
                 break;
-            case "restore":
-                const { notes } = message;
-                notes.forEach((note: NerorenClipboardType) => {
-                    createNote(note, settings);
-                });
             default:
                 break;
         }

@@ -130,7 +130,7 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
                         ]);
                     });
                     canvas.remove();
-                    popupBottomModal(ModalType.COPY, [note]);
+                    popupBottomModal(ModalType.COPY, [note], []);
                 } catch (error) {
                     console.error(error.name, error.message);
                 }
@@ -146,7 +146,7 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
                 if (!isSuccessful) {
                     console.error("copy failed");
                 }
-                popupBottomModal(ModalType.COPY, [note]);
+                popupBottomModal(ModalType.COPY, [note], []);
             }
         });
 
@@ -155,18 +155,19 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
         removeButton.innerHTML = `<div class="remove"></div>`;
         removeButton.addEventListener("click", () => {
             chrome.storage.local.get(NerorenClipboard, (result) => {
-                let notes = result.NerorenClipboard;
+                let notes: NerorenClipboardType[] | undefined = result.NerorenClipboard;
                 if (notes) {
-                    notes = notes.filter((note: NerorenClipboardType) => {
+                    const removedIndex = notes.findIndex((note) => {
                         const noteDate = new Date(note.date);
-                        return noteDate.getTime() !== date.getTime();
+                        return noteDate.getTime() === date.getTime();
                     });
+                    const [removedNote] = notes.splice(removedIndex, 1);
                     chrome.storage.local.set({ NerorenClipboard: notes });
                     chrome.action.setBadgeText({ text: notes.length > 0 ? `${notes.length}` : "" });
 
                     // remove inself
                     noteDom.remove();
-                    popupBottomModal(ModalType.REMOVE, [note]);
+                    popupBottomModal(ModalType.REMOVE, [removedNote], [removedIndex]);
 
                     // synchronize other popups
                     chrome.runtime.sendMessage({ type: "removed" });

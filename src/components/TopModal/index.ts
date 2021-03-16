@@ -12,20 +12,29 @@ yesButton?.addEventListener("click", () => {
     const noteDoms = document.getElementsByClassName("note");
     chrome.storage.local.get(NerorenClipboard, (result) => {
         const notes: NerorenClipboardType[] = result.NerorenClipboard;
-        const removedNotes = notes.filter((note) => !note.isPinned);
+        const removedNotes = [] as any;
+        const removedIndexes: number[] = [];
+        notes.forEach((note, i) => {
+            if (!note.isPinned) {
+                removedNotes.push(note);
+                removedIndexes.push(i);
+            }
+        });
         const remainedNotes = notes.filter((note) => note.isPinned);
         chrome.storage.local.set({ NerorenClipboard: remainedNotes });
-        chrome.action.setBadgeText({ text: "" });
+        chrome.action.setBadgeText({ text: remainedNotes.length === 0 ? "" : `${remainedNotes.length}` });
+
+        // remove unpinned notes
         Array.from(noteDoms).forEach((noteDom) => {
             const pinImage = noteDom.querySelector(".pin-image");
             if (pinImage?.classList.contains("dn")) {
                 noteDom.remove();
             }
         });
-        popupBottomModal(ModalType.REMOVE, removedNotes);
+        popupBottomModal(ModalType.REMOVE, removedNotes, removedIndexes);
 
         // synchronize other popups
-        chrome.runtime.sendMessage({ type: "removed", removedNotes });
+        chrome.runtime.sendMessage({ type: "removed" });
 
         el?.classList.remove("visible");
     });
