@@ -18,16 +18,23 @@ export interface NerorenClipboardType {
     isPinned: boolean;
 }
 
+export enum DefaultLocation {
+    LEFT = "LEFT",
+    RIGHT = "RIGHT",
+}
+
 export interface Settings {
     language: Language;
     autoSave: boolean;
     numOfLines: number;
+    defaultLocation: DefaultLocation;
 }
 
 let settings: Settings = {
     language: Language.ENGLISH,
     autoSave: true,
     numOfLines: 3,
+    defaultLocation: DefaultLocation.RIGHT,
 };
 
 export const getSettings = () => {

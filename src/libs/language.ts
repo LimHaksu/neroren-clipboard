@@ -59,3 +59,11 @@ export const getConfirmText = (language: Language) => {
 export const getShowText = (language: Language) => {
     return langDic[language].showText;
 };
+
+export const getLocationText = (language: Language) => {
+    return langDic[language].location;
+};
+
+export const getLocationSelectLabel = (language: Language) => {
+    return langDic[language].locationSelectLabel;
+};

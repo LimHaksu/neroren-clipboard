@@ -16,6 +16,11 @@ interface contentsByLanguage {
         more: string;
         less: string;
     };
+    locationSelectLabel: string;
+    location: {
+        left: string;
+        right: string;
+    };
 }
 
 const langDic: { [key: string]: contentsByLanguage } = {
@@ -37,6 +42,11 @@ const langDic: { [key: string]: contentsByLanguage } = {
             more: "展开",
             less: "隐藏",
         },
+        locationSelectLabel: "位置",
+        location: {
+            left: "左",
+            right: "右",
+        },
     },
     ENGLISH: {
         settingsHeader: "Settings",
@@ -55,6 +65,11 @@ const langDic: { [key: string]: contentsByLanguage } = {
         showText: {
             more: "show more",
             less: "show less",
+        },
+        locationSelectLabel: "Location",
+        location: {
+            left: "left",
+            right: "right",
         },
     },
     JAPANESE: {
@@ -75,6 +90,11 @@ const langDic: { [key: string]: contentsByLanguage } = {
             more: "もっと見る",
             less: "表示されない",
         },
+        locationSelectLabel: "位置",
+        location: {
+            left: "左",
+            right: "右",
+        },
     },
     KOREAN: {
         settingsHeader: "설정",
@@ -93,6 +113,11 @@ const langDic: { [key: string]: contentsByLanguage } = {
         showText: {
             more: "더보기",
             less: "감추기",
+        },
+        locationSelectLabel: "위치",
+        location: {
+            left: "왼쪽",
+            right: "오른쪽",
         },
     },
 };
