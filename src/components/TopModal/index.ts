@@ -11,7 +11,10 @@ const noButton = el?.querySelector("#no-button") as HTMLButtonElement;
 yesButton?.addEventListener("click", () => {
     const noteDoms = document.getElementsByClassName("note");
     chrome.storage.local.get(NerorenClipboard, (result) => {
-        const notes: NerorenClipboardType[] = result.NerorenClipboard;
+        let notes: NerorenClipboardType[] | undefined = result.NerorenClipboard;
+        if (!notes) {
+            notes = [];
+        }
         const removedNotes = [] as any;
         const removedIndexes: number[] = [];
         notes.forEach((note, i) => {
@@ -49,12 +52,6 @@ noButton?.addEventListener("click", () => {
  * @param {string} type
  */
 export const popupTopModal = () => {
-    const settings = getSettings();
-    content!.textContent = getTopModalContent(settings.language);
-    const confirmText = getConfirmText(settings.language);
-    yesButton!.innerText = confirmText.yes;
-    noButton!.innerText = confirmText.no;
-
     el?.classList.add("visible");
 };
 

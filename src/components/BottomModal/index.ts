@@ -1,4 +1,10 @@
-import { NerorenClipboardType, NerorenClipboard, getSettings, removeAllNotes, initNotes } from "../../popup";
+import {
+    NerorenClipboardType,
+    NerorenClipboard,
+    removeAllNotes,
+    initNotes,
+    NerorenClipboardSettings,
+} from "../../popup";
 import { getBottomModalContent } from "../../libs/language";
 import "./bottomModal.scss";
 
@@ -38,56 +44,58 @@ export const popupBottomModal = (type: ModalType, notes: NerorenClipboardType[],
         }, 5000);
     };
 
-    const settings = getSettings();
-    switch (type) {
-        case ModalType.COPY:
-            el.textContent = getBottomModalContent(settings.language, ModalType.COPY);
-            setTimeout(() => {
-                el.classList.remove("visible");
-            }, 1500);
-            break;
-        case ModalType.REMOVE:
-            el.textContent = getBottomModalContent(settings.language, ModalType.REMOVE);
-            const undoButton = document.createElement("button");
-            undoButton.className = "button button-undo";
-            undoButton.innerHTML = `<div class="undo"></div>`;
-            undoButton.addEventListener("click", () => {
-                chrome.storage.local.get(NerorenClipboard, (result) => {
-                    let prevNotes: NerorenClipboardType[] | undefined = result[NerorenClipboard];
-                    if (!prevNotes) {
-                        prevNotes = [];
-                    }
-                    let newNotes = Array.from(Array(prevNotes.length + notes.length));
-                    let indexOfRemovedIndex = 0;
-                    let indexOfPrevNotes = 0;
-
-                    newNotes = newNotes.map((_, i) => {
-                        const removeIndex = removedIndexes[indexOfRemovedIndex];
-                        if (removeIndex === i) {
-                            indexOfRemovedIndex++;
-                            return notes[indexOfRemovedIndex - 1];
+    chrome.storage.sync.get(NerorenClipboardSettings, (settingsResult) => {
+        const settings = settingsResult[NerorenClipboardSettings];
+        switch (type) {
+            case ModalType.COPY:
+                el.textContent = getBottomModalContent(settings.language, ModalType.COPY);
+                setTimeout(() => {
+                    el.classList.remove("visible");
+                }, 1500);
+                break;
+            case ModalType.REMOVE:
+                el.textContent = getBottomModalContent(settings.language, ModalType.REMOVE);
+                const undoButton = document.createElement("button");
+                undoButton.className = "button button-undo";
+                undoButton.innerHTML = `<div class="undo"></div>`;
+                undoButton.addEventListener("click", () => {
+                    chrome.storage.local.get(NerorenClipboard, (result) => {
+                        let prevNotes: NerorenClipboardType[] | undefined = result[NerorenClipboard];
+                        if (!prevNotes) {
+                            prevNotes = [];
                         }
-                        indexOfPrevNotes++;
-                        return (prevNotes as NerorenClipboardType[])[indexOfPrevNotes - 1];
+                        let newNotes = Array.from(Array(prevNotes.length + notes.length));
+                        let indexOfRemovedIndex = 0;
+                        let indexOfPrevNotes = 0;
+
+                        newNotes = newNotes.map((_, i) => {
+                            const removeIndex = removedIndexes[indexOfRemovedIndex];
+                            if (removeIndex === i) {
+                                indexOfRemovedIndex++;
+                                return notes[indexOfRemovedIndex - 1];
+                            }
+                            indexOfPrevNotes++;
+                            return (prevNotes as NerorenClipboardType[])[indexOfPrevNotes - 1];
+                        });
+                        console.log(notes, prevNotes, newNotes);
+                        chrome.storage.local.set({ NerorenClipboard: newNotes });
+                        chrome.action.setBadgeText({ text: newNotes.length > 0 ? `${newNotes.length}` : "" });
+
+                        removeAllNotes();
+                        initNotes(settings);
+
+                        // synchronize other popups.
+                        chrome.runtime.sendMessage({ type: "restore" });
                     });
-                    console.log(notes, prevNotes, newNotes);
-                    chrome.storage.local.set({ NerorenClipboard: newNotes });
-                    chrome.action.setBadgeText({ text: newNotes.length > 0 ? `${newNotes.length}` : "" });
-
-                    removeAllNotes();
-                    initNotes(settings);
-
-                    // synchronize other popups.
-                    chrome.runtime.sendMessage({ type: "restore" });
+                    el.classList.remove("visible");
                 });
-                el.classList.remove("visible");
-            });
 
-            el.appendChild(undoButton);
+                el.appendChild(undoButton);
 
-            lazyCloseModal(el);
-            break;
-    }
+                lazyCloseModal(el);
+                break;
+        }
+    });
 
     body?.appendChild(el);
     setTimeout(() => {

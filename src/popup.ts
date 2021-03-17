@@ -59,6 +59,7 @@ chrome.storage.sync.get(NerorenClipboardSettings, (result) => {
     }
 
     setHeader(settings.language);
+    changeTopModalLanguage(settings.language);
     initNotes(settings);
 });
 
