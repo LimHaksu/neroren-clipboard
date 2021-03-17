@@ -50,6 +50,7 @@ const setContextMenus = () => {
                 numOfLines: 3,
                 defaultLocation: DefaultLocation.RIGHT,
             };
+            chrome.storage.sync.set({ NerorenClipboardSettings: settings });
         }
         chrome.contextMenus.create({
             id: ContextMenuItemId,
@@ -146,16 +147,3 @@ chrome.storage.local.get(NerorenClipboard, (result) => {
 });
 
 chrome.action.setBadgeBackgroundColor({ color: [0, 0, 0, 255] });
-
-chrome.runtime.onInstalled.addListener((details) => {
-    switch (details.reason) {
-        case "install":
-        case "update":
-            // chrome.tabs.onActivated.addListener((tab) => {
-            //     chrome.scripting.executeScript({ files: ["contentScript.js"], target: { tabId: tab.tabId } });
-            // });
-            break;
-        default:
-            break;
-    }
-});

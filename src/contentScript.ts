@@ -1,22 +1,3 @@
-document.addEventListener(
-    "copy",
-    () => {
-        lazyCopy();
-    },
-    {
-        capture: true,
-    }
-);
-document.addEventListener(
-    "cut",
-    () => {
-        lazyCopy();
-    },
-    {
-        capture: true,
-    }
-);
-
 const lazyCopy = () => {
     setTimeout(async () => {
         let selection = document.getSelection()?.toString().trim();
@@ -40,3 +21,10 @@ const lazyCopy = () => {
         });
     }, 0);
 };
+
+document.addEventListener("copy", lazyCopy, {
+    capture: true,
+});
+document.addEventListener("cut", lazyCopy, {
+    capture: true,
+});
