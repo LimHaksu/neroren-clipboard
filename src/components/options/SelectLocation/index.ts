@@ -18,6 +18,9 @@ export const renderLocationSelect = () => {
                 break;
         }
         option.value = loc;
+        if (settings.defaultLocation === loc) {
+            option.defaultSelected = true;
+        }
         selectEl?.appendChild(option);
     }
 
