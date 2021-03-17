@@ -147,13 +147,16 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
                 if (!isSuccessful) {
                     console.error("copy failed");
                 }
-                popupBottomModal(ModalType.COPY, [note], []);
+                popupBottomModal(ModalType.COPY, [], []);
             }
         });
 
         const removeButton = document.createElement("button");
         removeButton.className = `button button-remove ${isPinned ? "dn" : ""}`;
         removeButton.innerHTML = `<div class="remove"></div>`;
+        if (isPinned) {
+            removeButton.disabled = true;
+        }
         removeButton.addEventListener("click", () => {
             chrome.storage.local.get(NerorenClipboard, (result) => {
                 let notes: NerorenClipboardType[] | undefined = result.NerorenClipboard;
@@ -187,10 +190,12 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
                     const isPinned = !notes[noteIndex].isPinned;
                     if (isPinned) {
                         removeButton.classList.add("dn");
+                        removeButton.disabled = true;
                         pinDom.classList.remove("dn");
                         pinDom.classList.add("visible");
                     } else {
                         removeButton.classList.remove("dn");
+                        removeButton.disabled = false;
                         pinDom.classList.remove("visible");
                     }
                     noteDom.dataset.ispinned = isPinned.toString();
