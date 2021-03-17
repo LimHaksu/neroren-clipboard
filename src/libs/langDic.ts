@@ -82,7 +82,7 @@ const langDic: { [key: string]: contentsByLanguage } = {
             right: "right",
         },
         timeFormat: (year, month, date, hours, minutes, seconds) =>
-            `${month}/${date}/${year} ${hours} : ${minutes} : ${seconds}`,
+            `${month} / ${date} / ${year}\u00A0\u00A0${hours} : ${minutes} : ${seconds}`,
     },
     JAPANESE: {
         settingsHeader: "設定",
