@@ -30,7 +30,7 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
         const { type, content } = data;
 
         const pinDom = document.createElement("div");
-        pinDom.className = `pin-image ${isPinned ? "" : "dn"}`;
+        pinDom.className = `pin-image ${isPinned ? "visible" : "dn"}`;
 
         noteDom.appendChild(pinDom);
 
@@ -187,9 +187,10 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
                     if (isPinned) {
                         removeButton.classList.add("dn");
                         pinDom.classList.remove("dn");
+                        pinDom.classList.add("visible");
                     } else {
                         removeButton.classList.remove("dn");
-                        pinDom.classList.add("dn");
+                        pinDom.classList.remove("visible");
                     }
                     notes[noteIndex].isPinned = isPinned;
                     chrome.storage.local.set({ NerorenClipboard: notes });

@@ -69,12 +69,16 @@
     height: 30px;
     background-image: url("../../assets/pin-image.png");
     background-size: cover;
-    animation: appear-pin 0.3s;
+    animation: disappear-pin 0.3s;
     animation-fill-mode: forwards;
 
-    &.dn {
-        animation: disappear-pin 0.3s;
+    &.visible {
+        animation: appear-pin 0.3s;
         animation-fill-mode: forwards;
+    }
+
+    &.dn {
+        display: none;
     }
 }
 
