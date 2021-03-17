@@ -37,16 +37,44 @@
     transition: opacity 0.4s;
 }
 
+@keyframes appear-pin {
+    0% {
+        opacity: 0%;
+        transform: translate(-18px, -23px);
+    }
+    1% {
+        opacity: 100%;
+    }
+    100% {
+        transform: translate(-15px, -13px);
+    }
+}
+
+@keyframes disappear-pin {
+    0% {
+        transform: translate(-15px, -13px);
+    }
+    99% {
+        opacity: 100%;
+    }
+    100% {
+        opacity: 0%;
+        transform: translate(-18px, -23px);
+    }
+}
+
 .pin-image {
     position: absolute;
     width: 30px;
     height: 30px;
     background-image: url("../../assets/pin-image.png");
     background-size: cover;
-    transform: translate(-15px, -13px);
+    animation: appear-pin 0.3s;
+    animation-fill-mode: forwards;
 
     &.dn {
-        display: none;
+        animation: disappear-pin 0.3s;
+        animation-fill-mode: forwards;
     }
 }
 
@@ -110,8 +138,12 @@
     border-radius: 8px;
     outline: none;
     cursor: pointer;
+    transition: height 0.5s, padding 0.5s;
     &.dn {
-        display: none;
+        height: 0px;
+        padding: 0 6px;
+        margin-top: 0;
+        transition: height 0.5s, padding 0.5s, margin-top 0.5s;
     }
 }
 
