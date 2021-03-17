@@ -67,3 +67,20 @@ export const getLocationText = (language: Language) => {
 export const getLocationSelectLabel = (language: Language) => {
     return langDic[language].locationSelectLabel;
 };
+
+const insertLeadingZero = (number: number) => {
+    return number < 10 ? "0" + number : number;
+};
+
+export const getTimeFormat = (date: Date, language: Language) => {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const dateText = date.getDate();
+    let hours: string | number = date.getHours();
+    let minutes: string | number = date.getMinutes();
+    let seconds: string | number = date.getSeconds();
+    hours = insertLeadingZero(hours);
+    minutes = insertLeadingZero(minutes);
+    seconds = insertLeadingZero(seconds);
+    return langDic[language].timeFormat(year, month, dateText, hours, minutes, seconds);
+};

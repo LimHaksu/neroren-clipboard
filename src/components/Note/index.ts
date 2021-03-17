@@ -1,5 +1,5 @@
 import { NerorenClipboardType, NerorenClipboard, Settings } from "../../popup";
-import { Language, getShowText } from "../../libs/language";
+import { getShowText, getTimeFormat } from "../../libs/language";
 import { ModalType, popupBottomModal } from "../BottomModal";
 import "./note.scss";
 
@@ -228,7 +228,7 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
         bottomWrapper.appendChild(pageUrlDom);
 
         const timeDom = document.createElement("div");
-        timeDom.textContent = getTimeText(date, settings.language);
+        timeDom.textContent = getTimeFormat(date, settings.language);
         timeDom.className = "time";
         bottomWrapper.appendChild(timeDom);
 
@@ -241,29 +241,6 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
         }, 0);
         noteWrapper?.insertBefore(noteDom, noteWrapper.firstChild);
     }
-};
-
-const getTimeText = (date: Date, language: Language) => {
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const dateText = date.getDate();
-    let hours: string | number = date.getHours();
-    let minutes: string | number = date.getMinutes();
-    let seconds: string | number = date.getSeconds();
-    hours = insertLeadingZero(hours);
-    minutes = insertLeadingZero(minutes);
-    seconds = insertLeadingZero(seconds);
-    const countryMap = {
-        CHINESE: `${year}年 ${month}月 ${dateText}日 ${hours} : ${minutes} : ${seconds}`,
-        ENGLISH: `${month}/${dateText}/${year} ${hours} : ${minutes} : ${seconds}`,
-        JAPANESE: `${year}年 ${month}月 ${dateText}日 ${hours} : ${minutes} : ${seconds}`,
-        KOREAN: `${year}년 ${month}월 ${dateText}일 ${hours} : ${minutes} : ${seconds}`,
-    };
-    return countryMap[language];
-};
-
-const insertLeadingZero = (number: number) => {
-    return number < 10 ? "0" + number : number;
 };
 
 const setCanvasImage = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, path: string, callback: Function) => {

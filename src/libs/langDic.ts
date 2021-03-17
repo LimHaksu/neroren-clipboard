@@ -21,6 +21,14 @@ interface contentsByLanguage {
         left: string;
         right: string;
     };
+    timeFormat: (
+        year: number,
+        month: number,
+        date: number,
+        hours: number | string,
+        minutes: number | string,
+        seconds: number | string
+    ) => string;
 }
 
 const langDic: { [key: string]: contentsByLanguage } = {
@@ -47,6 +55,8 @@ const langDic: { [key: string]: contentsByLanguage } = {
             left: "左",
             right: "右",
         },
+        timeFormat: (year, month, date, hours, minutes, seconds) =>
+            `${year}年 ${month}月 ${date}日 ${hours} : ${minutes} : ${seconds}`,
     },
     ENGLISH: {
         settingsHeader: "Settings",
@@ -71,6 +81,8 @@ const langDic: { [key: string]: contentsByLanguage } = {
             left: "left",
             right: "right",
         },
+        timeFormat: (year, month, date, hours, minutes, seconds) =>
+            `${month}/${date}/${year} ${hours} : ${minutes} : ${seconds}`,
     },
     JAPANESE: {
         settingsHeader: "設定",
@@ -95,6 +107,8 @@ const langDic: { [key: string]: contentsByLanguage } = {
             left: "左",
             right: "右",
         },
+        timeFormat: (year, month, date, hours, minutes, seconds) =>
+            `${year}年 ${month}月 ${date}日 ${hours} : ${minutes} : ${seconds}`,
     },
     KOREAN: {
         settingsHeader: "설정",
@@ -119,6 +133,8 @@ const langDic: { [key: string]: contentsByLanguage } = {
             left: "왼쪽",
             right: "오른쪽",
         },
+        timeFormat: (year, month, date, hours, minutes, seconds) =>
+            `${year}년 ${month}월 ${date}일 ${hours} : ${minutes} : ${seconds}`,
     },
 };
 
