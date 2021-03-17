@@ -27,6 +27,7 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
         date = new Date(date);
         const noteDom = document.createElement("div");
         noteDom.className = "note";
+        noteDom.dataset.ispinned = isPinned.toString();
         const { type, content } = data;
 
         const pinDom = document.createElement("div");
@@ -192,6 +193,7 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
                         removeButton.classList.remove("dn");
                         pinDom.classList.remove("visible");
                     }
+                    noteDom.dataset.ispinned = isPinned.toString();
                     notes[noteIndex].isPinned = isPinned;
                     chrome.storage.local.set({ NerorenClipboard: notes });
 

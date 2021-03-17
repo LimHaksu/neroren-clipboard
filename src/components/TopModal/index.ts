@@ -27,7 +27,7 @@ yesButton?.addEventListener("click", () => {
         // remove unpinned notes
         Array.from(noteDoms).forEach((noteDom) => {
             const pinImage = noteDom.querySelector(".pin-image");
-            if (pinImage?.classList.contains("dn")) {
+            if ((noteDom as HTMLDivElement).dataset.ispinned === "false") {
                 noteDom.remove();
             }
         });

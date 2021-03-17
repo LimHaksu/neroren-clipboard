@@ -107,7 +107,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
                 data = { type: "link", content: pageUrl };
             }
             if (data) {
-                const newNote = { data, pageUrl, date: new Date().toJSON(), title };
+                const newNote = { data, pageUrl, date: new Date().toJSON(), title, isPinned: false };
                 addNewNote(notes, newNote);
             }
         });
@@ -128,7 +128,13 @@ chrome.runtime.onMessage.addListener((message, sender) => {
                         notes = [];
                     }
                     const data = { type: "text", content: selectionText };
-                    const newNote = { data, pageUrl: pageUrl ? pageUrl : "", date: new Date().toJSON(), title };
+                    const newNote = {
+                        data,
+                        pageUrl: pageUrl ? pageUrl : "",
+                        date: new Date().toJSON(),
+                        title,
+                        isPinned: false,
+                    };
                     addNewNote(notes, newNote);
                 });
             }
