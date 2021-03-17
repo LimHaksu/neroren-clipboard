@@ -50,7 +50,7 @@ const langDic: { [key: string]: contentsByLanguage } = {
             more: "展开",
             less: "隐藏",
         },
-        locationSelectLabel: "位置",
+        locationSelectLabel: "弹出窗口位置",
         location: {
             left: "左",
             right: "右",
@@ -76,7 +76,7 @@ const langDic: { [key: string]: contentsByLanguage } = {
             more: "show more",
             less: "show less",
         },
-        locationSelectLabel: "Location",
+        locationSelectLabel: "Popup location",
         location: {
             left: "left",
             right: "right",
@@ -102,7 +102,7 @@ const langDic: { [key: string]: contentsByLanguage } = {
             more: "もっと見る",
             less: "表示されない",
         },
-        locationSelectLabel: "位置",
+        locationSelectLabel: "ポップアップ位置",
         location: {
             left: "左",
             right: "右",
@@ -128,7 +128,7 @@ const langDic: { [key: string]: contentsByLanguage } = {
             more: "더보기",
             less: "감추기",
         },
-        locationSelectLabel: "위치",
+        locationSelectLabel: "팝업 위치",
         location: {
             left: "왼쪽",
             right: "오른쪽",
