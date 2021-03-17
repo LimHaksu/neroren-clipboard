@@ -8,10 +8,16 @@ enum Language {
     KOREAN = "KOREAN",
 }
 
+enum DefaultLocation {
+    LEFT = "LEFT",
+    RIGHT = "RIGHT",
+}
+
 interface Settings {
     language: Language;
     autoSave: boolean;
     numOfLines: number;
+    defaultLocation: DefaultLocation;
 }
 
 const ContextMenuItemId = "neroren-clipboard-save";
@@ -42,6 +48,7 @@ const setContextMenus = () => {
                 autoSave: true,
                 language: Language.ENGLISH,
                 numOfLines: 3,
+                defaultLocation: DefaultLocation.RIGHT,
             };
         }
         chrome.contextMenus.create({
@@ -139,3 +146,16 @@ chrome.storage.local.get(NerorenClipboard, (result) => {
 });
 
 chrome.action.setBadgeBackgroundColor({ color: [0, 0, 0, 255] });
+
+chrome.runtime.onInstalled.addListener((details) => {
+    switch (details.reason) {
+        case "install":
+        case "update":
+            // chrome.tabs.onActivated.addListener((tab) => {
+            //     chrome.scripting.executeScript({ files: ["contentScript.js"], target: { tabId: tab.tabId } });
+            // });
+            break;
+        default:
+            break;
+    }
+});
