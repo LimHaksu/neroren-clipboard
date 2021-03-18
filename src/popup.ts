@@ -1,4 +1,9 @@
-import { createNote } from "./components/Note";
+import {
+    createNote,
+    removeGridBeforeNotesCreated,
+    makeGridAfterNotesCreated,
+    makeGridAfterNoteCreated,
+} from "./components/Note";
 import { setHeader, changeHeaderLanguage } from "./components/Header";
 import { changeTopModalLanguage } from "./components/TopModal";
 import { Language } from "./libs/language";
@@ -67,9 +72,14 @@ export const initNotes = (settings: Settings) => {
     chrome.storage.local.get(NerorenClipboard, (result) => {
         const notes: NerorenClipboardType[] = result[NerorenClipboard];
         if (notes) {
+            const noteWrapper = document.querySelector("#note-wrapper") as HTMLElement;
+            removeGridBeforeNotesCreated(noteWrapper);
             notes.forEach((note) => {
                 createNote(note, settings);
             });
+
+            const noteDoms = document.querySelectorAll<HTMLElement>(".note");
+            makeGridAfterNotesCreated(noteWrapper, noteDoms);
         }
     });
 };
@@ -89,7 +99,10 @@ chrome.runtime.onMessage.addListener((message) => {
         switch (type) {
             case "createNote":
                 const { note } = message;
-                createNote(note, settings);
+                const noteWrapper = document.querySelector("#note-wrapper") as HTMLElement;
+                removeGridBeforeNotesCreated(noteWrapper);
+                const createdNoteDom = createNote(note, settings) as HTMLElement;
+                makeGridAfterNoteCreated(noteWrapper, createdNoteDom);
                 break;
             case "changePopupLanguage":
                 changeHeaderLanguage(settings.language);

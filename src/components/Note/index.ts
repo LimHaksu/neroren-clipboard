@@ -11,11 +11,39 @@ interface Clipboard {
     write?(notes: Array<ClipboardItem>): Promise<void>;
 }
 
-const resetHeight = (noteWrapper: HTMLElement, noteDom: HTMLElement, rowGap: number, rowHeight: number) => {
+export const removeGridBeforeNotesCreated = (noteWrapper: HTMLElement) => {
+    noteWrapper.classList.add("invisible");
     noteWrapper.style.display = "unset";
+};
+
+export const makeGridAfterNoteCreated = (noteWrapper: HTMLElement, noteDom: HTMLElement) => {
+    setTimeout(() => {
+        noteDom.style.gridRowEnd = `span ${noteDom.dataset.span}`;
+        noteWrapper.style.display = "grid";
+        noteWrapper.classList.remove("invisible");
+    });
+};
+
+export const makeGridAfterNotesCreated = (noteWrapper: HTMLElement, noteDoms: NodeListOf<HTMLElement>) => {
+    setTimeout(() => {
+        noteDoms.forEach((noteDom) => {
+            noteDom.style.gridRowEnd = `span ${noteDom.dataset.span}`;
+        });
+        noteWrapper.style.display = "grid";
+        noteWrapper.classList.remove("invisible");
+    }, 0);
+};
+
+const setHeight = (noteDom: HTMLElement, rowGap: number, rowHeight: number) => {
     const noteHieght = noteDom.getBoundingClientRect().height;
     const rowSpan = Math.ceil((noteHieght + rowGap) / (rowHeight + rowGap));
+    noteDom.dataset.span = "" + rowSpan;
     noteDom.style.gridRowEnd = `span ${rowSpan}`;
+};
+
+const resetHeight = (noteWrapper: HTMLElement, noteDom: HTMLElement, rowGap: number, rowHeight: number) => {
+    noteWrapper.style.display = "unset";
+    setHeight(noteDom, rowGap, rowHeight);
     noteWrapper.style.display = "grid";
 };
 
@@ -60,7 +88,9 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
                 const imageContent = document.createElement("img") as HTMLImageElement;
                 imageContent.className = "image";
                 imageContent.onload = () => {
-                    resetHeight(noteWrapper, noteDom, rowGap, rowHeight);
+                    setTimeout(() => {
+                        resetHeight(noteWrapper, noteDom, rowGap, rowHeight);
+                    }, 0);
                 };
                 imageContent.src = content;
                 contentDom.appendChild(imageContent);
@@ -109,7 +139,7 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
             }
 
             // set height for grid
-            resetHeight(noteWrapper, noteDom, rowGap, rowHeight);
+            setHeight(noteDom, rowGap, rowHeight);
         }, 0);
 
         const buttonWrapper = document.createElement("div");
@@ -240,14 +270,13 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
         timeDom.className = "time";
         bottomWrapper.appendChild(timeDom);
 
-        setTimeout(() => {
-            noteWrapper.style.display = "unset";
-            const noteHieght = noteDom.getBoundingClientRect().height;
-            const rowSpan = Math.ceil((noteHieght + rowGap) / (rowHeight + rowGap));
-            noteDom.style.gridRowEnd = `span ${rowSpan}`;
-            noteWrapper.style.display = "grid";
-        }, 0);
         noteWrapper?.insertBefore(noteDom, noteWrapper.firstChild);
+
+        const noteHieght = noteDom.getBoundingClientRect().height;
+        const rowSpan = Math.ceil((noteHieght + rowGap) / (rowHeight + rowGap));
+        noteDom.dataset.span = `${rowSpan}`;
+
+        return noteDom;
     }
 };
 

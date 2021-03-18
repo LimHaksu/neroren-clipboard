@@ -3,12 +3,3 @@ body {
     margin: 0;
     user-select: none;
 }
-
-.note-wrapper {
-    margin: 0 8px 8px 8px;
-    min-height: 60px;
-    display: grid;
-    grid-gap: 16px;
-    grid-template-columns: repeat(auto-fit, 310px);
-    grid-auto-rows: 50px;
-}
