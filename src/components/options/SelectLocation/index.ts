@@ -1,5 +1,5 @@
 import { getNerorenClipboardSettings, setNerorenClipboardSettings } from "storage/sync";
-import { DefaultLocation } from "storage/sync";
+import { DefaultLocation } from "types";
 import { getLocationText, getLocationSelectLabel } from "libs/language";
 import "./selectLocation.scss";
 

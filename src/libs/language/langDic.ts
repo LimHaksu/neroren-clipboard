@@ -1,35 +1,4 @@
-interface contentsByLanguage {
-    settingsHeader: string;
-    selectLabel: string;
-    optionText: string;
-    toggleMessageText: string;
-    lineSettingMessageText: string;
-    topModal: string;
-    bottomModalCopy: string;
-    bottomModalRemove: string;
-    headerContent: string;
-    confirmText: {
-        yes: string;
-        no: string;
-    };
-    showText: {
-        more: string;
-        less: string;
-    };
-    locationSelectLabel: string;
-    location: {
-        left: string;
-        right: string;
-    };
-    timeFormat: (
-        year: number,
-        month: number,
-        date: number,
-        hours: number | string,
-        minutes: number | string,
-        seconds: number | string
-    ) => string;
-}
+import { contentsByLanguage } from "types";
 
 const langDic: { [key: string]: contentsByLanguage } = {
     CHINESE: {

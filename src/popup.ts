@@ -10,9 +10,6 @@ import { changeTopModalLanguage } from "components/TopModal";
 import { getNerorenClipboardSettings } from "storage/sync";
 import "popup.scss";
 
-export const NerorenClipboard = "NerorenClipboard";
-export const NerorenClipboardSettings = "NerorenClipboardSettings";
-
 const init = async () => {
     const settings = await getNerorenClipboardSettings();
     setHeader(settings.language);

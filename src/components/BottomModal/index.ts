@@ -1,15 +1,12 @@
 import { removeAllNotes, initNotes } from "components/Note";
-import { Note, getNerorenClipboard, setNerorenClipboard } from "storage/local";
+import { getNerorenClipboard, setNerorenClipboard } from "storage/local";
+import { Note, ModalType } from "types";
 import { getNerorenClipboardSettings } from "storage/sync";
 import { getBottomModalContent } from "libs/language";
 import "./bottomModal.scss";
 
 const body = document.querySelector("body");
 
-export enum ModalType {
-    COPY = "COPY",
-    REMOVE = "REMOVE",
-}
 /**
  *
  * @param {string} type

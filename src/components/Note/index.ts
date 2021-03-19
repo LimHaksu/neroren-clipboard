@@ -1,16 +1,8 @@
-import { Note, getNerorenClipboard, setNerorenClipboard } from "storage/local";
-import { Settings } from "storage/sync";
+import { getNerorenClipboard, setNerorenClipboard } from "storage/local";
+import { Note, Settings, Clipboard, ClipboardItem, ModalType } from "types";
 import { getShowText, getTimeFormat } from "libs/language";
-import { ModalType, popupBottomModal } from "components/BottomModal";
+import { popupBottomModal } from "components/BottomModal";
 import "./note.scss";
-
-declare class ClipboardItem {
-    constructor(data: { [mimeType: string]: Blob });
-}
-
-interface Clipboard {
-    write?(notes: Array<ClipboardItem>): Promise<void>;
-}
 
 export const removeGridBeforeNotesCreated = (noteWrapper: HTMLElement) => {
     noteWrapper.classList.add("invisible");

@@ -1,5 +1,6 @@
-import { getTopModalContent, getConfirmText, Language } from "libs/language";
-import { ModalType, popupBottomModal } from "components/BottomModal";
+import { getTopModalContent, getConfirmText } from "libs/language";
+import { Language, ModalType } from "types";
+import { popupBottomModal } from "components/BottomModal";
 import { getNerorenClipboard, setNerorenClipboard } from "storage/local";
 import "./topModal.scss";
 

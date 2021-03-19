@@ -4,13 +4,12 @@ import {
     getSelectLabel,
     getToggleMessageText,
     getLineSettingMessageText,
-    Language,
     getOptionText,
     getHeaderContent,
     getLocationSelectLabel,
     getLocationText,
 } from "libs/language";
-import { DefaultLocation } from "storage/sync";
+import { Language, DefaultLocation } from "types";
 import "./selectLanguage.scss";
 
 export const renderLanguageSelect = async () => {

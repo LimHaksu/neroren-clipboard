@@ -1,6 +1,7 @@
-import { Language, getHeaderContent } from "libs/language";
+import { getHeaderContent } from "libs/language";
+import { Language, DefaultLocation } from "types";
 import { popupTopModal } from "components/TopModal";
-import { DefaultLocation, getNerorenClipboardSettings } from "storage/sync";
+import { getNerorenClipboardSettings } from "storage/sync";
 import "./header.scss";
 
 export const setHeader = (language: Language) => {

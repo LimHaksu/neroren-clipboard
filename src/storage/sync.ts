@@ -1,17 +1,4 @@
-import { Language } from "libs/language";
-const NerorenClipboardSettings = "NerorenClipboardSettings";
-
-export enum DefaultLocation {
-    LEFT = "LEFT",
-    RIGHT = "RIGHT",
-}
-
-export interface Settings {
-    language: Language;
-    autoSave: boolean;
-    numOfLines: number;
-    defaultLocation: DefaultLocation;
-}
+import { NerorenClipboardSettings, Language, DefaultLocation, Settings } from "types";
 
 export const getNerorenClipboardSettings = () => {
     return new Promise<Settings>((resolve, reject) => {

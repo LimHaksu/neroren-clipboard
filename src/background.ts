@@ -1,21 +1,13 @@
 import { setNerorenClipboard, getNerorenClipboard } from "storage/local";
-import { Settings } from "storage/sync";
-
-const NerorenClipboardSettings = "NerorenClipboardSettings";
-const ContextMenuItemId = "neroren-clipboard-save";
-const ContextMenuItemIdForPage = "neroren-clipboard-save-page";
-
-enum Language {
-    CHINESE = "CHINESE",
-    ENGLISH = "ENGLISH",
-    JAPANESE = "JAPANESE",
-    KOREAN = "KOREAN",
-}
-
-enum DefaultLocation {
-    LEFT = "LEFT",
-    RIGHT = "RIGHT",
-}
+import {
+    NerorenClipboardSettings,
+    ContextMenuItemId,
+    ContextMenuItemIdForPage,
+    Language,
+    Settings,
+    DefaultLocation,
+    Note,
+} from "types";
 
 const getContextMenusTitle = (language: Language) => {
     const { CHINESE, ENGLISH, JAPANESE, KOREAN } = Language;
@@ -60,17 +52,6 @@ const setContextMenus = () => {
 };
 
 setContextMenus();
-
-interface Note {
-    data: {
-        type: string;
-        content: string;
-    };
-    pageUrl: string;
-    date: string;
-    title: string | undefined;
-    isPinned: boolean;
-}
 
 const addNewNote = async (notes: Note[], newNote: Note) => {
     await setNerorenClipboard([...notes, newNote]);

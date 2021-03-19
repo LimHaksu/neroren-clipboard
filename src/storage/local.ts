@@ -1,15 +1,4 @@
-const NerorenClipboard = "NerorenClipboard";
-
-export interface Note {
-    data: {
-        type: string;
-        content: string;
-    };
-    pageUrl: string;
-    date: string;
-    title: string | undefined;
-    isPinned: boolean;
-}
+import { NerorenClipboard, Note } from "types";
 
 export const getNerorenClipboard = () => {
     return new Promise<Note[]>((resolve, reject) => {

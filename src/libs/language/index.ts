@@ -1,12 +1,5 @@
-import { ModalType } from "components/BottomModal";
 import langDic from "libs/language/langDic";
-
-export enum Language {
-    CHINESE = "CHINESE",
-    ENGLISH = "ENGLISH",
-    JAPANESE = "JAPANESE",
-    KOREAN = "KOREAN",
-}
+import { Language, ModalType } from "types";
 
 /**
  *
