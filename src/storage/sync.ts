@@ -1,4 +1,4 @@
-import { NerorenClipboardSettings, Language, DefaultLocation, Settings } from "types";
+import { NerorenClipboardSettings, DefaultLocation, Settings } from "types";
 
 export const getNerorenClipboardSettings = () => {
     return new Promise<Settings>((resolve, reject) => {
@@ -10,7 +10,7 @@ export const getNerorenClipboardSettings = () => {
             if (!settings) {
                 settings = {
                     autoSave: true,
-                    language: Language.ENGLISH,
+                    language: "ENGLISH",
                     numOfLines: 3,
                     defaultLocation: DefaultLocation.RIGHT,
                 } as Settings;

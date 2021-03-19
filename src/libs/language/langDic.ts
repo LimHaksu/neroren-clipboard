@@ -1,6 +1,6 @@
-import { contentsByLanguage } from "types";
+import { LangDic } from "types";
 
-const langDic: { [key: string]: contentsByLanguage } = {
+const langDic: LangDic = {
     CHINESE: {
         settingsHeader: "设定",
         selectLabel: "语言",

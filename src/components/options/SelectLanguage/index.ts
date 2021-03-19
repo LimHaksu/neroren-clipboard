@@ -16,8 +16,8 @@ export const renderLanguageSelect = async () => {
     const selectEl = document.querySelector("#language");
     try {
         const settings = await getNerorenClipboardSettings();
-
-        for (const lang in Language) {
+        const languages: Language[] = ["CHINESE", "ENGLISH", "JAPANESE", "KOREAN"];
+        for (const lang of languages) {
             const option = document.createElement("option");
             const text = getOptionText(lang as Language);
             option.text = text;

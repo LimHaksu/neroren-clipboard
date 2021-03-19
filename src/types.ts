@@ -2,12 +2,7 @@ export const NerorenClipboard = "NerorenClipboard";
 export const NerorenClipboardSettings = "NerorenClipboardSettings";
 export const ContextMenuItemId = "neroren-clipboard-save";
 export const ContextMenuItemIdForPage = "neroren-clipboard-save-page";
-export enum Language {
-    CHINESE = "CHINESE",
-    ENGLISH = "ENGLISH",
-    JAPANESE = "JAPANESE",
-    KOREAN = "KOREAN",
-}
+export type Language = "CHINESE" | "ENGLISH" | "JAPANESE" | "KOREAN";
 export enum DefaultLocation {
     LEFT = "LEFT",
     RIGHT = "RIGHT",
@@ -28,7 +23,7 @@ export interface Note {
     title: string | undefined;
     isPinned: boolean;
 }
-export interface contentsByLanguage {
+export interface ContentsByLanguage {
     settingsHeader: string;
     selectLabel: string;
     optionText: string;
@@ -61,6 +56,9 @@ export interface contentsByLanguage {
     ) => string;
     contextMenusTitle: string;
 }
+export type LangDic = {
+    [key in Language]: ContentsByLanguage;
+};
 export declare class ClipboardItem {
     constructor(data: { [mimeType: string]: Blob });
 }
