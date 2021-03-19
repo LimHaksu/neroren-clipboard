@@ -1,7 +1,7 @@
-import { NerorenClipboard, removeAllNotes, initNotes } from "../../popup";
-import { Note, getNerorenClipboard, setNerorenClipboard } from "../../storage/local";
-import { getNerorenClipboardSettings } from "../../storage/sync";
-import { getBottomModalContent } from "../../libs/language";
+import { removeAllNotes, initNotes } from "popup";
+import { Note, getNerorenClipboard, setNerorenClipboard } from "storage/local";
+import { getNerorenClipboardSettings } from "storage/sync";
+import { getBottomModalContent } from "libs/language";
 import "./bottomModal.scss";
 
 const body = document.querySelector("body");

@@ -1,7 +1,7 @@
-import { Note, getNerorenClipboard, setNerorenClipboard } from "../../storage/local";
-import { Settings } from "../../storage/sync";
-import { getShowText, getTimeFormat } from "../../libs/language";
-import { ModalType, popupBottomModal } from "../BottomModal";
+import { Note, getNerorenClipboard, setNerorenClipboard } from "storage/local";
+import { Settings } from "storage/sync";
+import { getShowText, getTimeFormat } from "libs/language";
+import { ModalType, popupBottomModal } from "components/BottomModal";
 import "./note.scss";
 
 declare class ClipboardItem {

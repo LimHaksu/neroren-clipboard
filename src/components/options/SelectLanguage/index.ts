@@ -1,6 +1,6 @@
-import { getNerorenClipboardSettings, setNerorenClipboardSettings } from "../../../storage/sync";
-import { Language, getOptionText, getSelectLabel } from "../../../libs/language";
-import { rerenderAfterLanguageChange } from "../../../options";
+import { getNerorenClipboardSettings, setNerorenClipboardSettings } from "storage/sync";
+import { Language, getOptionText, getSelectLabel } from "libs/language";
+import { rerenderAfterLanguageChange } from "options";
 import "./selectLanguage.scss";
 
 export const renderLanguageSelect = async () => {

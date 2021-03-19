@@ -1,5 +1,5 @@
-import { getNerorenClipboardSettings, setNerorenClipboardSettings } from "../../../storage/sync";
-import { getToggleMessageText } from "../../../libs/language";
+import { getNerorenClipboardSettings, setNerorenClipboardSettings } from "storage/sync";
+import { getToggleMessageText } from "libs/language";
 import "./toggleButton.scss";
 
 export const renderToggleButton = async () => {

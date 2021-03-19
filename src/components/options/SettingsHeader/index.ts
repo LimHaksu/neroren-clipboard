@@ -1,5 +1,5 @@
-import { getNerorenClipboardSettings } from "../../../storage/sync";
-import { getSettingsHeader, getHeaderContent } from "../../../libs/language";
+import { getNerorenClipboardSettings } from "storage/sync";
+import { getSettingsHeader, getHeaderContent } from "libs/language";
 import "./settingsHeader.scss";
 
 export const renderSettingsHeader = async () => {

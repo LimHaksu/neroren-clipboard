@@ -1,5 +1,5 @@
-import { setNerorenClipboard, getNerorenClipboard } from "./storage/local";
-import { Settings } from "./storage/sync";
+import { setNerorenClipboard, getNerorenClipboard } from "storage/local";
+import { Settings } from "storage/sync";
 
 const NerorenClipboardSettings = "NerorenClipboardSettings";
 const ContextMenuItemId = "neroren-clipboard-save";

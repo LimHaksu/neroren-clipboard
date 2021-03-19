@@ -1,5 +1,5 @@
-import { getNerorenClipboardSettings, setNerorenClipboardSettings } from "../../../storage/sync";
-import { getLineSettingMessageText } from "../../../libs/language";
+import { getNerorenClipboardSettings, setNerorenClipboardSettings } from "storage/sync";
+import { getLineSettingMessageText } from "libs/language";
 import "./lineSetting.scss";
 
 export const renderLineSetting = async () => {

@@ -1,4 +1,4 @@
-import { Language } from "../libs/language";
+import { Language } from "libs/language";
 const NerorenClipboardSettings = "NerorenClipboardSettings";
 
 export enum DefaultLocation {

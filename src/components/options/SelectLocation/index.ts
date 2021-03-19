@@ -1,6 +1,6 @@
-import { getNerorenClipboardSettings, setNerorenClipboardSettings } from "../../../storage/sync";
-import { DefaultLocation } from "../../../storage/sync";
-import { getLocationText, getLocationSelectLabel } from "../../../libs/language";
+import { getNerorenClipboardSettings, setNerorenClipboardSettings } from "storage/sync";
+import { DefaultLocation } from "storage/sync";
+import { getLocationText, getLocationSelectLabel } from "libs/language";
 import "./selectLocation.scss";
 
 export const renderLocationSelect = async () => {

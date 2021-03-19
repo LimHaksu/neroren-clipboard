@@ -1,7 +1,6 @@
-import { NerorenClipboard } from "../../popup";
-import { getTopModalContent, getConfirmText, Language } from "../../libs/language";
-import { ModalType, popupBottomModal } from "../BottomModal";
-import { Note, getNerorenClipboard, setNerorenClipboard } from "../../storage/local";
+import { getTopModalContent, getConfirmText, Language } from "libs/language";
+import { ModalType, popupBottomModal } from "components/BottomModal";
+import { getNerorenClipboard, setNerorenClipboard } from "storage/local";
 import "./topModal.scss";
 
 const el = document.querySelector("#top-modal");

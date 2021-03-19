@@ -1,8 +1,8 @@
-import { renderSettingsHeader } from "./components/options/SettingsHeader";
-import { renderLanguageSelect } from "./components/options/SelectLanguage";
-import { renderToggleButton } from "./components/options/ToggleButton";
-import { renderLineSetting } from "./components/options/LineSetting";
-import { renderLocationSelect } from "./components/options/SelectLocation";
+import { renderSettingsHeader } from "components/options/SettingsHeader";
+import { renderLanguageSelect } from "components/options/SelectLanguage";
+import { renderToggleButton } from "components/options/ToggleButton";
+import { renderLineSetting } from "components/options/LineSetting";
+import { renderLocationSelect } from "components/options/SelectLocation";
 import {
     getSettingsHeader,
     getSelectLabel,
@@ -12,8 +12,8 @@ import {
     getHeaderContent,
     getLocationSelectLabel,
     getLocationText,
-} from "./libs/language";
-import { DefaultLocation } from "./storage/sync";
+} from "libs/language";
+import { DefaultLocation } from "storage/sync";
 import "./options.scss";
 
 const catImage = document.querySelector(".cat");

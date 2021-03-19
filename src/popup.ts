@@ -3,12 +3,12 @@ import {
     removeGridBeforeNotesCreated,
     makeGridAfterNotesCreated,
     makeGridAfterNoteCreated,
-} from "./components/Note";
-import { setHeader, changeHeaderLanguage } from "./components/Header";
-import { changeTopModalLanguage } from "./components/TopModal";
-import { getNerorenClipboardSettings, Settings } from "./storage/sync";
-import { getNerorenClipboard } from "./storage/local";
-import "./popup.scss";
+} from "components/Note";
+import { setHeader, changeHeaderLanguage } from "components/Header";
+import { changeTopModalLanguage } from "components/TopModal";
+import { getNerorenClipboardSettings, Settings } from "storage/sync";
+import { getNerorenClipboard } from "storage/local";
+import "popup.scss";
 
 export const NerorenClipboard = "NerorenClipboard";
 export const NerorenClipboardSettings = "NerorenClipboardSettings";
