@@ -1,5 +1,9 @@
-const NerorenClipboard = "NerorenClipboard";
+import { setNerorenClipboard, getNerorenClipboard } from "./storage/local";
+import { Settings } from "./storage/sync";
+
 const NerorenClipboardSettings = "NerorenClipboardSettings";
+const ContextMenuItemId = "neroren-clipboard-save";
+const ContextMenuItemIdForPage = "neroren-clipboard-save-page";
 
 enum Language {
     CHINESE = "CHINESE",
@@ -12,16 +16,6 @@ enum DefaultLocation {
     LEFT = "LEFT",
     RIGHT = "RIGHT",
 }
-
-interface Settings {
-    language: Language;
-    autoSave: boolean;
-    numOfLines: number;
-    defaultLocation: DefaultLocation;
-}
-
-const ContextMenuItemId = "neroren-clipboard-save";
-const ContextMenuItemIdForPage = "neroren-clipboard-save-page";
 
 const getContextMenusTitle = (language: Language) => {
     const { CHINESE, ENGLISH, JAPANESE, KOREAN } = Language;
@@ -73,25 +67,21 @@ interface Note {
         content: string;
     };
     pageUrl: string;
-    date: string;
+    date: Date;
     title: string | undefined;
+    isPinned: boolean;
 }
 
-const addNewNote = (notes: Note[], newNote: Note) => {
-    chrome.storage.local.set({
-        NerorenClipboard: [...notes, newNote],
-    });
+const addNewNote = async (notes: Note[], newNote: Note) => {
+    await setNerorenClipboard([...notes, newNote]);
     chrome.action.setBadgeText({ text: `${notes.length + 1}` });
     chrome.runtime.sendMessage({ type: "createNote", note: newNote });
 };
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-    if (info.menuItemId === ContextMenuItemId || info.menuItemId === ContextMenuItemIdForPage) {
-        chrome.storage.local.get(NerorenClipboard, (result) => {
-            let notes = result.NerorenClipboard;
-            if (!notes) {
-                notes = [];
-            }
+    (async function () {
+        if (info.menuItemId === ContextMenuItemId || info.menuItemId === ContextMenuItemIdForPage) {
+            const notes = await getNerorenClipboard();
             const { linkUrl, srcUrl, selectionText, pageUrl } = info;
             const { title } = tab as chrome.tabs.Tab;
             let data = null;
@@ -107,49 +97,50 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
                 data = { type: "link", content: pageUrl };
             }
             if (data) {
-                const newNote = { data, pageUrl, date: new Date().toJSON(), title, isPinned: false };
+                const newNote = { data, pageUrl, date: new Date(), title, isPinned: false };
                 addNewNote(notes, newNote);
             }
-        });
-    }
+        }
+    })();
 });
 
 chrome.runtime.onMessage.addListener((message, sender) => {
     const { type } = message;
     if (type === "copy") {
-        chrome.storage.sync.get(NerorenClipboardSettings, (settingResult) => {
-            const settings = settingResult[NerorenClipboardSettings];
-            if (settings.autoSave) {
-                const { selectionText } = message.data;
-                const { title, url: pageUrl } = sender.tab as chrome.tabs.Tab;
-                chrome.storage.local.get(NerorenClipboard, (result) => {
-                    let notes = result.NerorenClipboard;
-                    if (!notes) {
-                        notes = [];
-                    }
+        try {
+            chrome.storage.sync.get(NerorenClipboardSettings, async (result) => {
+                const settings = result[NerorenClipboardSettings];
+                if (settings.autoSave) {
+                    const { selectionText } = message.data;
+                    const { title, url: pageUrl } = sender.tab as chrome.tabs.Tab;
+                    const notes = await getNerorenClipboard();
                     const data = { type: "text", content: selectionText };
                     const newNote = {
                         data,
                         pageUrl: pageUrl ? pageUrl : "",
-                        date: new Date().toJSON(),
+                        date: new Date(),
                         title,
                         isPinned: false,
                     };
                     addNewNote(notes, newNote);
-                });
-            }
-        });
+                }
+            });
+        } catch (e) {
+            alert(e);
+        }
     } else if (type === "setting") {
         setContextMenus();
     }
 });
 
-chrome.storage.local.get(NerorenClipboard, (result) => {
-    let notes = result.NerorenClipboard;
-    if (!notes) {
-        notes = [];
+const init = async () => {
+    try {
+        const notes = await getNerorenClipboard();
+        chrome.action.setBadgeText({ text: notes.length > 0 ? `${notes.length}` : "" });
+    } catch (e) {
+        alert(e);
     }
-    chrome.action.setBadgeText({ text: notes.length > 0 ? `${notes.length}` : "" });
-});
+};
+init();
 
 chrome.action.setBadgeBackgroundColor({ color: [0, 0, 0, 255] });
