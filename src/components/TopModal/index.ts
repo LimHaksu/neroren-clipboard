@@ -1,6 +1,7 @@
-import { NerorenClipboard, getSettings, NerorenClipboardType } from "../../popup";
-import { getTopModalContent, getConfirmText } from "../../libs/language";
+import { NerorenClipboard } from "../../popup";
+import { getTopModalContent, getConfirmText, Language } from "../../libs/language";
 import { ModalType, popupBottomModal } from "../BottomModal";
+import { Note, getNerorenClipboard, setNerorenClipboard } from "../../storage/local";
 import "./topModal.scss";
 
 const el = document.querySelector("#top-modal");
@@ -8,13 +9,10 @@ const content = el?.querySelector(".content");
 const yesButton = el?.querySelector("#yes-button") as HTMLButtonElement;
 const noButton = el?.querySelector("#no-button") as HTMLButtonElement;
 
-yesButton?.addEventListener("click", () => {
+yesButton?.addEventListener("click", async () => {
     const noteDoms = document.getElementsByClassName("note");
-    chrome.storage.local.get(NerorenClipboard, (result) => {
-        let notes: NerorenClipboardType[] | undefined = result.NerorenClipboard;
-        if (!notes) {
-            notes = [];
-        }
+    try {
+        const notes = await getNerorenClipboard();
         const removedNotes = [] as any;
         const removedIndexes: number[] = [];
         notes.forEach((note, i) => {
@@ -24,7 +22,7 @@ yesButton?.addEventListener("click", () => {
             }
         });
         const remainedNotes = notes.filter((note) => note.isPinned);
-        chrome.storage.local.set({ NerorenClipboard: remainedNotes });
+        await setNerorenClipboard(remainedNotes);
         chrome.action.setBadgeText({ text: remainedNotes.length === 0 ? "" : `${remainedNotes.length}` });
 
         // remove unpinned notes
@@ -40,7 +38,9 @@ yesButton?.addEventListener("click", () => {
         chrome.runtime.sendMessage({ type: "removed" });
 
         el?.classList.remove("visible");
-    });
+    } catch (e) {
+        alert(e);
+    }
 });
 
 noButton?.addEventListener("click", () => {

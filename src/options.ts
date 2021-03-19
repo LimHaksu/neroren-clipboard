@@ -3,7 +3,6 @@ import { renderLanguageSelect } from "./components/options/SelectLanguage";
 import { renderToggleButton } from "./components/options/ToggleButton";
 import { renderLineSetting } from "./components/options/LineSetting";
 import { renderLocationSelect } from "./components/options/SelectLocation";
-
 import {
     getSettingsHeader,
     getSelectLabel,
@@ -14,7 +13,7 @@ import {
     getLocationSelectLabel,
     getLocationText,
 } from "./libs/language";
-import { NerorenClipboardSettings, setSettings, DefaultLocation } from "./popup";
+import { DefaultLocation } from "./storage/sync";
 import "./options.scss";
 
 const catImage = document.querySelector(".cat");
@@ -22,16 +21,14 @@ setTimeout(() => {
     catImage?.classList.add("visible");
 }, 500);
 
-chrome.storage.sync.get(NerorenClipboardSettings, (result) => {
-    const settings = result[NerorenClipboardSettings];
-    setSettings(settings);
-
+const init = async () => {
     renderSettingsHeader();
     renderLanguageSelect();
     renderToggleButton();
     renderLineSetting();
     renderLocationSelect();
-});
+};
+init();
 
 export const rerenderAfterLanguageChange = (language: Language) => {
     const title = document.head.querySelector("title");

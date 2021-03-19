@@ -1,6 +1,6 @@
 import { Language, getHeaderContent } from "../../libs/language";
 import { popupTopModal } from "../TopModal";
-import { DefaultLocation, NerorenClipboardSettings, Settings } from "../../popup";
+import { DefaultLocation, getNerorenClipboardSettings } from "../../storage/sync";
 import "./header.scss";
 
 export const setHeader = (language: Language) => {
@@ -32,23 +32,21 @@ export const setHeader = (language: Language) => {
         const floatingButton = document.createElement("button");
         floatingButton.className = "button button-floating";
         floatingButton.innerHTML = '<div class="floating"></div>';
-        floatingButton.addEventListener("click", () => {
+        floatingButton.addEventListener("click", async () => {
             let width = 358;
-            chrome.storage.sync.get(NerorenClipboardSettings, (result) => {
-                const settings: Settings = result[NerorenClipboardSettings];
-                let left = 0;
-                if (settings.defaultLocation === DefaultLocation.RIGHT) {
-                    left = screen.width;
-                }
-                chrome.windows.create({
-                    url: "/popup.html",
-                    width,
-                    type: "popup",
-                    left,
-                    height: screen.height,
-                });
-                window.close();
+            const settings = await getNerorenClipboardSettings();
+            let left = 0;
+            if (settings.defaultLocation === DefaultLocation.RIGHT) {
+                left = screen.width;
+            }
+            chrome.windows.create({
+                url: "/popup.html",
+                width,
+                type: "popup",
+                left,
+                height: screen.height,
             });
+            window.close();
         });
 
         buttonWrapper.appendChild(clearButton);

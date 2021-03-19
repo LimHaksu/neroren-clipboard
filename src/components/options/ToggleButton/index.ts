@@ -1,25 +1,33 @@
-import { getSettings, setSettings } from "../../../popup";
+import { getNerorenClipboardSettings, setNerorenClipboardSettings } from "../../../storage/sync";
 import { getToggleMessageText } from "../../../libs/language";
 import "./toggleButton.scss";
 
-export const renderToggleButton = () => {
+export const renderToggleButton = async () => {
     const el = document.querySelector("#toggle-button");
     const circle = el?.querySelector("#circle");
     const message = document.querySelector("#toggle-message");
-    const settings = getSettings();
-    if (circle) {
-        toggle(circle, settings.autoSave);
+    try {
+        const settings = await getNerorenClipboardSettings();
+        if (circle) {
+            toggle(circle, settings.autoSave);
+        }
+
+        el?.addEventListener("click", async () => {
+            try {
+                const settings = await getNerorenClipboardSettings();
+                settings.autoSave = !settings.autoSave;
+                toggle(circle!, settings.autoSave);
+
+                setNerorenClipboardSettings(settings);
+            } catch (e) {
+                alert(e);
+            }
+        });
+
+        message!.textContent = getToggleMessageText(settings.language);
+    } catch (e) {
+        alert(e);
     }
-
-    el?.addEventListener("click", () => {
-        const settings = getSettings();
-        settings.autoSave = !settings.autoSave;
-        toggle(circle!, settings.autoSave);
-
-        setSettings(settings);
-    });
-
-    message!.textContent = getToggleMessageText(settings.language);
 };
 
 const toggle = (circle: Element, autoSave: boolean) => {

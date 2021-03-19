@@ -6,82 +6,30 @@ import {
 } from "./components/Note";
 import { setHeader, changeHeaderLanguage } from "./components/Header";
 import { changeTopModalLanguage } from "./components/TopModal";
-import { Language } from "./libs/language";
+import { getNerorenClipboardSettings, Settings } from "./storage/sync";
+import { getNerorenClipboard } from "./storage/local";
 import "./popup.scss";
 
 export const NerorenClipboard = "NerorenClipboard";
 export const NerorenClipboardSettings = "NerorenClipboardSettings";
 
-export interface NerorenClipboardType {
-    data: {
-        type: string;
-        content: string;
-    };
-    pageUrl: string;
-    date: Date;
-    title: string;
-    isPinned: boolean;
-}
-
-export enum DefaultLocation {
-    LEFT = "LEFT",
-    RIGHT = "RIGHT",
-}
-
-export interface Settings {
-    language: Language;
-    autoSave: boolean;
-    numOfLines: number;
-    defaultLocation: DefaultLocation;
-}
-
-let settings: Settings = {
-    language: Language.ENGLISH,
-    autoSave: true,
-    numOfLines: 3,
-    defaultLocation: DefaultLocation.RIGHT,
-};
-
-export const getSettings = () => {
-    return settings;
-};
-
-export const setSettings = (newSettings: Settings) => {
-    settings = newSettings;
-    chrome.storage.sync.set({ NerorenClipboardSettings: newSettings }, () => {
-        chrome.runtime.sendMessage({ type: "setting" });
-    });
-};
-
-chrome.storage.sync.get(NerorenClipboardSettings, (result) => {
-    let newSettings: Settings = result[NerorenClipboardSettings];
-    if (newSettings) {
-        settings = newSettings;
-    } else {
-        // If there are not settings in storage, initiate them
-        newSettings = settings;
-        chrome.storage.sync.set({ NerorenClipboardSettings: newSettings });
-    }
-
+const init = async () => {
+    const settings = await getNerorenClipboardSettings();
     setHeader(settings.language);
     changeTopModalLanguage(settings.language);
     initNotes(settings);
-});
+};
+init();
 
-export const initNotes = (settings: Settings) => {
-    chrome.storage.local.get(NerorenClipboard, (result) => {
-        const notes: NerorenClipboardType[] = result[NerorenClipboard];
-        if (notes) {
-            const noteWrapper = document.querySelector("#note-wrapper") as HTMLElement;
-            removeGridBeforeNotesCreated(noteWrapper);
-            notes.forEach((note) => {
-                createNote(note, settings);
-            });
-
-            const noteDoms = document.querySelectorAll<HTMLElement>(".note");
-            makeGridAfterNotesCreated(noteWrapper, noteDoms);
-        }
+export const initNotes = async (settings: Settings) => {
+    const notes = await getNerorenClipboard();
+    const noteWrapper = document.querySelector("#note-wrapper") as HTMLElement;
+    removeGridBeforeNotesCreated(noteWrapper);
+    notes.forEach((note) => {
+        createNote(note, settings);
     });
+    const noteDoms = document.querySelectorAll<HTMLElement>(".note");
+    makeGridAfterNotesCreated(noteWrapper, noteDoms);
 };
 
 export const removeAllNotes = () => {
@@ -92,33 +40,31 @@ export const removeAllNotes = () => {
     }
 };
 
-chrome.runtime.onMessage.addListener((message) => {
-    chrome.storage.sync.get(NerorenClipboardSettings, (result) => {
-        const settings: Settings = result[NerorenClipboardSettings];
-        const { type } = message;
-        switch (type) {
-            case "createNote":
-                const { note } = message;
-                const noteWrapper = document.querySelector("#note-wrapper") as HTMLElement;
-                removeGridBeforeNotesCreated(noteWrapper);
-                const createdNoteDom = createNote(note, settings) as HTMLElement;
-                makeGridAfterNoteCreated(noteWrapper, createdNoteDom);
-                break;
-            case "changePopupLanguage":
-                changeHeaderLanguage(settings.language);
-                changeTopModalLanguage(settings.language);
-                removeAllNotes();
-                initNotes(settings);
-                break;
-            case "removed":
-            case "changeLine":
-            case "pinned":
-            case "restore":
-                removeAllNotes();
-                initNotes(settings);
-                break;
-            default:
-                break;
-        }
-    });
+chrome.runtime.onMessage.addListener(async (message) => {
+    const settings = await getNerorenClipboardSettings();
+    const { type } = message;
+    switch (type) {
+        case "createNote":
+            const { note } = message;
+            const noteWrapper = document.querySelector("#note-wrapper") as HTMLElement;
+            removeGridBeforeNotesCreated(noteWrapper);
+            const createdNoteDom = createNote(note, settings) as HTMLElement;
+            makeGridAfterNoteCreated(noteWrapper, createdNoteDom);
+            break;
+        case "changePopupLanguage":
+            changeHeaderLanguage(settings.language);
+            changeTopModalLanguage(settings.language);
+            removeAllNotes();
+            initNotes(settings);
+            break;
+        case "removed":
+        case "changeLine":
+        case "pinned":
+        case "restore":
+            removeAllNotes();
+            initNotes(settings);
+            break;
+        default:
+            break;
+    }
 });

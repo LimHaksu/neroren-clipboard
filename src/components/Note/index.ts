@@ -1,4 +1,6 @@
-import { NerorenClipboardType, NerorenClipboard, Settings } from "../../popup";
+import { NerorenClipboard } from "../../popup";
+import { Note, getNerorenClipboard, setNerorenClipboard } from "../../storage/local";
+import { Settings } from "../../storage/sync";
 import { getShowText, getTimeFormat } from "../../libs/language";
 import { ModalType, popupBottomModal } from "../BottomModal";
 import "./note.scss";
@@ -47,7 +49,7 @@ const resetHeight = (noteWrapper: HTMLElement, noteDom: HTMLElement, rowGap: num
     noteWrapper.style.display = "grid";
 };
 
-export const createNote = (note: NerorenClipboardType, settings: Settings) => {
+export const createNote = (note: Note, settings: Settings) => {
     const noteWrapper: HTMLDivElement | null = document.querySelector("#note-wrapper");
     if (noteWrapper) {
         let { date } = note;
@@ -187,34 +189,34 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
         if (isPinned) {
             removeButton.disabled = true;
         }
-        removeButton.addEventListener("click", () => {
-            chrome.storage.local.get(NerorenClipboard, (result) => {
-                let notes: NerorenClipboardType[] | undefined = result.NerorenClipboard;
-                if (notes) {
-                    const removedIndex = notes.findIndex((note) => {
-                        const noteDate = new Date(note.date);
-                        return noteDate.getTime() === date.getTime();
-                    });
-                    const [removedNote] = notes.splice(removedIndex, 1);
-                    chrome.storage.local.set({ NerorenClipboard: notes });
-                    chrome.action.setBadgeText({ text: notes.length > 0 ? `${notes.length}` : "" });
+        removeButton.addEventListener("click", async () => {
+            try {
+                const notes = await getNerorenClipboard();
+                const removedIndex = notes.findIndex((note) => {
+                    const noteDate = new Date(note.date);
+                    return noteDate.getTime() === date.getTime();
+                });
+                const [removedNote] = notes.splice(removedIndex, 1);
+                await setNerorenClipboard(notes);
+                chrome.action.setBadgeText({ text: notes.length > 0 ? `${notes.length}` : "" });
 
-                    // remove inself
-                    noteDom.remove();
-                    popupBottomModal(ModalType.REMOVE, [removedNote], [removedIndex]);
+                // remove inself
+                noteDom.remove();
+                popupBottomModal(ModalType.REMOVE, [removedNote], [removedIndex]);
 
-                    // synchronize other popups
-                    chrome.runtime.sendMessage({ type: "removed" });
-                }
-            });
+                // synchronize other popups
+                chrome.runtime.sendMessage({ type: "removed" });
+            } catch (e) {
+                alert(e);
+            }
         });
 
         const pinButton = document.createElement("button");
         pinButton.className = "button button-pin";
         pinButton.innerHTML = '<div class="pin"></div>';
-        pinButton.addEventListener("click", () => {
-            chrome.storage.local.get(NerorenClipboard, (result) => {
-                const notes: NerorenClipboardType[] = result[NerorenClipboard];
+        pinButton.addEventListener("click", async () => {
+            try {
+                const notes = await getNerorenClipboard();
                 const noteIndex = notes.findIndex((note) => new Date(note.date).getTime() === date.getTime());
                 if (noteIndex >= 0) {
                     const isPinned = !notes[noteIndex].isPinned;
@@ -230,12 +232,14 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
                     }
                     noteDom.dataset.ispinned = isPinned.toString();
                     notes[noteIndex].isPinned = isPinned;
-                    chrome.storage.local.set({ NerorenClipboard: notes });
+                    await setNerorenClipboard(notes);
 
                     // synchronize other popups
                     chrome.runtime.sendMessage({ type: "pinned" });
                 }
-            });
+            } catch (e) {
+                alert(e);
+            }
         });
 
         buttonWrapper.appendChild(copyButton);
@@ -262,7 +266,7 @@ export const createNote = (note: NerorenClipboardType, settings: Settings) => {
         pageUrlDom.innerHTML = `<span style="font-style:italic;"><a target="_blank" href="${pageUrl}"></a></span>`;
         pageUrlDom.className = "from";
         const urlHref = pageUrlDom.querySelector("a");
-        urlHref!.textContent = title;
+        urlHref!.textContent = title ? title : "";
         bottomWrapper.appendChild(pageUrlDom);
 
         const timeDom = document.createElement("div");
