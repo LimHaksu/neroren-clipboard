@@ -1,4 +1,3 @@
-import { NerorenClipboard } from "../../popup";
 import { Note, getNerorenClipboard, setNerorenClipboard } from "../../storage/local";
 import { Settings } from "../../storage/sync";
 import { getShowText, getTimeFormat } from "../../libs/language";
@@ -52,9 +51,9 @@ const resetHeight = (noteWrapper: HTMLElement, noteDom: HTMLElement, rowGap: num
 export const createNote = (note: Note, settings: Settings) => {
     const noteWrapper: HTMLDivElement | null = document.querySelector("#note-wrapper");
     if (noteWrapper) {
-        let { date } = note;
+        const { date: dateJson } = note;
         const { pageUrl, data, title, isPinned } = note;
-        date = new Date(date);
+        const date = new Date(dateJson);
         const noteDom = document.createElement("div");
         noteDom.className = "note";
         noteDom.dataset.ispinned = isPinned.toString();

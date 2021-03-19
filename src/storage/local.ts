@@ -6,7 +6,7 @@ export interface Note {
         content: string;
     };
     pageUrl: string;
-    date: Date;
+    date: string;
     title: string | undefined;
     isPinned: boolean;
 }
