@@ -1,4 +1,4 @@
-import { ModalType } from "../components/BottomModal";
+import { ModalType } from "../../components/BottomModal";
 import langDic from "./langDic";
 
 export enum Language {
