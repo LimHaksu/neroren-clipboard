@@ -1,4 +1,4 @@
-import { removeAllNotes, initNotes } from "popup";
+import { removeAllNotes, initNotes } from "components/Note";
 import { Note, getNerorenClipboard, setNerorenClipboard } from "storage/local";
 import { getNerorenClipboardSettings } from "storage/sync";
 import { getBottomModalContent } from "libs/language";

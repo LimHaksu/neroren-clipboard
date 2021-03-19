@@ -302,3 +302,22 @@ const setCanvasImage = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D
     img.crossOrigin = "anonymous";
     img.src = path;
 };
+
+export const initNotes = async (settings: Settings) => {
+    const notes = await getNerorenClipboard();
+    const noteWrapper = document.querySelector("#note-wrapper") as HTMLElement;
+    removeGridBeforeNotesCreated(noteWrapper);
+    notes.forEach((note) => {
+        createNote(note, settings);
+    });
+    const noteDoms = document.querySelectorAll<HTMLElement>(".note");
+    makeGridAfterNotesCreated(noteWrapper, noteDoms);
+};
+
+export const removeAllNotes = () => {
+    const noteWrapper = document.querySelector("#note-wrapper");
+    while (noteWrapper?.firstChild) {
+        const lastChild = noteWrapper.lastChild!;
+        noteWrapper.removeChild(lastChild);
+    }
+};

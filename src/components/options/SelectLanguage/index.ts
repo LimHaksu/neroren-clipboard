@@ -1,6 +1,16 @@
 import { getNerorenClipboardSettings, setNerorenClipboardSettings } from "storage/sync";
-import { Language, getOptionText, getSelectLabel } from "libs/language";
-import { rerenderAfterLanguageChange } from "options";
+import {
+    getSettingsHeader,
+    getSelectLabel,
+    getToggleMessageText,
+    getLineSettingMessageText,
+    Language,
+    getOptionText,
+    getHeaderContent,
+    getLocationSelectLabel,
+    getLocationText,
+} from "libs/language";
+import { DefaultLocation } from "storage/sync";
 import "./selectLanguage.scss";
 
 export const renderLanguageSelect = async () => {
@@ -41,4 +51,32 @@ export const renderLanguageSelect = async () => {
     } catch (e) {
         alert(e);
     }
+};
+
+const rerenderAfterLanguageChange = (language: Language) => {
+    const title = document.head.querySelector("title");
+    const settingsHeader = document.querySelector("#settings-header");
+    const languageLabel = document.querySelector("#language-label");
+    const toggleMessage = document.querySelector("#toggle-message");
+    const lineMessage = document.querySelector("#line-message");
+    const locationLabel = document.querySelector("#location-label");
+    const locationSelect = document.querySelector("#location");
+    const locationText = getLocationText(language);
+
+    title!.textContent = `${getHeaderContent(language)} ${getSettingsHeader(language)}`;
+    settingsHeader!.textContent = getSettingsHeader(language);
+    languageLabel!.textContent = getSelectLabel(language);
+    toggleMessage!.textContent = getToggleMessageText(language);
+    lineMessage!.textContent = getLineSettingMessageText(language);
+    locationLabel!.textContent = getLocationSelectLabel(language);
+    Array.from(locationSelect!.children).forEach((option) => {
+        switch ((option as HTMLOptionElement).value as DefaultLocation) {
+            case DefaultLocation.LEFT:
+                option.textContent = locationText.left;
+                break;
+            case DefaultLocation.RIGHT:
+                option.textContent = locationText.right;
+                break;
+        }
+    });
 };

@@ -1,13 +1,13 @@
 import {
     createNote,
     removeGridBeforeNotesCreated,
-    makeGridAfterNotesCreated,
     makeGridAfterNoteCreated,
+    removeAllNotes,
+    initNotes,
 } from "components/Note";
 import { setHeader, changeHeaderLanguage } from "components/Header";
 import { changeTopModalLanguage } from "components/TopModal";
-import { getNerorenClipboardSettings, Settings } from "storage/sync";
-import { getNerorenClipboard } from "storage/local";
+import { getNerorenClipboardSettings } from "storage/sync";
 import "popup.scss";
 
 export const NerorenClipboard = "NerorenClipboard";
@@ -20,25 +20,6 @@ const init = async () => {
     initNotes(settings);
 };
 init();
-
-export const initNotes = async (settings: Settings) => {
-    const notes = await getNerorenClipboard();
-    const noteWrapper = document.querySelector("#note-wrapper") as HTMLElement;
-    removeGridBeforeNotesCreated(noteWrapper);
-    notes.forEach((note) => {
-        createNote(note, settings);
-    });
-    const noteDoms = document.querySelectorAll<HTMLElement>(".note");
-    makeGridAfterNotesCreated(noteWrapper, noteDoms);
-};
-
-export const removeAllNotes = () => {
-    const noteWrapper = document.querySelector("#note-wrapper");
-    while (noteWrapper?.firstChild) {
-        const lastChild = noteWrapper.lastChild!;
-        noteWrapper.removeChild(lastChild);
-    }
-};
 
 chrome.runtime.onMessage.addListener(async (message) => {
     const settings = await getNerorenClipboardSettings();
