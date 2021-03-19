@@ -26,6 +26,7 @@ const langDic: { [key: string]: contentsByLanguage } = {
         },
         timeFormat: (year, month, date, hours, minutes, seconds) =>
             `${year}年 ${month}月 ${date}日 ${hours} : ${minutes} : ${seconds}`,
+        contextMenusTitle: "保存到Neroren剪贴板",
     },
     ENGLISH: {
         settingsHeader: "Settings",
@@ -52,6 +53,7 @@ const langDic: { [key: string]: contentsByLanguage } = {
         },
         timeFormat: (year, month, date, hours, minutes, seconds) =>
             `${month} / ${date} / ${year}\u00A0\u00A0${hours} : ${minutes} : ${seconds}`,
+        contextMenusTitle: "Save to Neroren Clipboard",
     },
     JAPANESE: {
         settingsHeader: "設定",
@@ -78,6 +80,7 @@ const langDic: { [key: string]: contentsByLanguage } = {
         },
         timeFormat: (year, month, date, hours, minutes, seconds) =>
             `${year}年 ${month}月 ${date}日 ${hours} : ${minutes} : ${seconds}`,
+        contextMenusTitle: "Nerorenクリップボードに保存",
     },
     KOREAN: {
         settingsHeader: "설정",
@@ -104,6 +107,7 @@ const langDic: { [key: string]: contentsByLanguage } = {
         },
         timeFormat: (year, month, date, hours, minutes, seconds) =>
             `${year}년 ${month}월 ${date}일 ${hours} : ${minutes} : ${seconds}`,
+        contextMenusTitle: "네로렌 클립보드에 저장",
     },
 };
 

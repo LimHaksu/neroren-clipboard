@@ -59,6 +59,7 @@ export interface contentsByLanguage {
         minutes: number | string,
         seconds: number | string
     ) => string;
+    contextMenusTitle: string;
 }
 export declare class ClipboardItem {
     constructor(data: { [mimeType: string]: Blob });

@@ -1,43 +1,14 @@
 import { setNerorenClipboard, getNerorenClipboard } from "storage/local";
-import {
-    NerorenClipboardSettings,
-    ContextMenuItemId,
-    ContextMenuItemIdForPage,
-    Language,
-    Settings,
-    DefaultLocation,
-    Note,
-} from "types";
+import { getNerorenClipboardSettings } from "storage/sync";
+import { NerorenClipboardSettings, ContextMenuItemId, ContextMenuItemIdForPage, Note } from "types";
+import { getContextMenusTitle } from "libs/language";
 
-const getContextMenusTitle = (language: Language) => {
-    const { CHINESE, ENGLISH, JAPANESE, KOREAN } = Language;
-    switch (language) {
-        case CHINESE:
-            return "保存到Neroren剪贴板";
-        case JAPANESE:
-            return "Nerorenクリップボードに保存";
-        case KOREAN:
-            return "네로렌 클립보드에 저장";
-        case ENGLISH:
-        default:
-            return "Save to Neroren Clipboard";
-    }
-};
+const setContextMenus = async () => {
+    try {
+        chrome.contextMenus.remove(ContextMenuItemId);
+        chrome.contextMenus.remove(ContextMenuItemIdForPage);
 
-const setContextMenus = () => {
-    chrome.contextMenus.remove(ContextMenuItemId);
-
-    chrome.storage.sync.get(NerorenClipboardSettings, (result) => {
-        let settings: Settings | undefined = result[NerorenClipboardSettings];
-        if (!settings) {
-            settings = {
-                autoSave: true,
-                language: Language.ENGLISH,
-                numOfLines: 3,
-                defaultLocation: DefaultLocation.RIGHT,
-            };
-            chrome.storage.sync.set({ NerorenClipboardSettings: settings });
-        }
+        const settings = await getNerorenClipboardSettings();
         chrome.contextMenus.create({
             id: ContextMenuItemId,
             title: getContextMenusTitle(settings.language),
@@ -48,10 +19,10 @@ const setContextMenus = () => {
             title: getContextMenusTitle(settings.language),
             contexts: ["page"],
         });
-    });
+    } catch (e) {
+        alert(e);
+    }
 };
-
-setContextMenus();
 
 const addNewNote = async (notes: Note[], newNote: Note) => {
     await setNerorenClipboard([...notes, newNote]);
@@ -118,6 +89,7 @@ const init = async () => {
     try {
         const notes = await getNerorenClipboard();
         chrome.action.setBadgeText({ text: notes.length > 0 ? `${notes.length}` : "" });
+        setContextMenus();
     } catch (e) {
         alert(e);
     }

@@ -77,3 +77,7 @@ export const getTimeFormat = (date: Date, language: Language) => {
     seconds = insertLeadingZero(seconds);
     return langDic[language].timeFormat(year, month, dateText, hours, minutes, seconds);
 };
+
+export const getContextMenusTitle = (language: Language) => {
+    return langDic[language].contextMenusTitle;
+};

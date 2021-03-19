@@ -5,16 +5,15 @@ import { renderLineSetting } from "components/options/LineSetting";
 import { renderLocationSelect } from "components/options/SelectLocation";
 import "./options.scss";
 
-const catImage = document.querySelector(".cat");
-setTimeout(() => {
-    catImage?.classList.add("visible");
-}, 500);
-
 const init = async () => {
     renderSettingsHeader();
     renderLanguageSelect();
     renderToggleButton();
     renderLineSetting();
     renderLocationSelect();
+    const catImage = document.querySelector(".cat");
+    setTimeout(() => {
+        catImage?.classList.add("visible");
+    }, 500);
 };
 init();
