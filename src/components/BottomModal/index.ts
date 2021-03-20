@@ -36,60 +36,63 @@ export const popupBottomModal = async (type: ModalType, notes: Note[], removedIn
             }
         }, 5000);
     };
-
-    const settings = await getNerorenClipboardSettings();
-    switch (type) {
-        case ModalType.COPY:
-            el.textContent = getBottomModalContent(settings.language, ModalType.COPY);
-            setTimeout(() => {
-                el.classList.remove("visible");
-            }, 1500);
-            break;
-        case ModalType.REMOVE:
-            el.textContent = getBottomModalContent(settings.language, ModalType.REMOVE);
-            const undoButton = document.createElement("button");
-            undoButton.className = "button button-undo";
-            undoButton.innerHTML = `<div class="undo"></div>`;
-            undoButton.addEventListener("click", async () => {
-                try {
-                    const prevNotes = await getNerorenClipboard();
-                    let newNotes = Array.from(Array(prevNotes.length + notes.length));
-                    let indexOfRemovedIndex = 0;
-                    let indexOfPrevNotes = 0;
-
-                    newNotes = newNotes.map((_, i) => {
-                        const removeIndex = removedIndexes[indexOfRemovedIndex];
-                        if (removeIndex === i) {
-                            indexOfRemovedIndex++;
-                            return notes[indexOfRemovedIndex - 1];
-                        }
-                        indexOfPrevNotes++;
-                        return (prevNotes as Note[])[indexOfPrevNotes - 1];
-                    });
-                    console.log(notes, prevNotes, newNotes);
-                    await setNerorenClipboard(newNotes);
-                    chrome.action.setBadgeText({ text: newNotes.length > 0 ? `${newNotes.length}` : "" });
-
-                    removeAllNotes();
-                    initNotes(settings);
-
-                    // synchronize other popups.
-                    chrome.runtime.sendMessage({ type: "restore" });
-
+    try {
+        const settings = await getNerorenClipboardSettings();
+        switch (type) {
+            case ModalType.COPY:
+                el.textContent = getBottomModalContent(settings.language, ModalType.COPY);
+                setTimeout(() => {
                     el.classList.remove("visible");
-                } catch (e) {
-                    alert(e);
-                }
-            });
+                }, 1500);
+                break;
+            case ModalType.REMOVE:
+                el.textContent = getBottomModalContent(settings.language, ModalType.REMOVE);
+                const undoButton = document.createElement("button");
+                undoButton.className = "button button-undo";
+                undoButton.innerHTML = `<div class="undo"></div>`;
+                undoButton.addEventListener("click", async () => {
+                    try {
+                        const prevNotes = await getNerorenClipboard();
+                        let newNotes = Array.from(Array(prevNotes.length + notes.length));
+                        let indexOfRemovedIndex = 0;
+                        let indexOfPrevNotes = 0;
 
-            el.appendChild(undoButton);
+                        newNotes = newNotes.map((_, i) => {
+                            const removeIndex = removedIndexes[indexOfRemovedIndex];
+                            if (removeIndex === i) {
+                                indexOfRemovedIndex++;
+                                return notes[indexOfRemovedIndex - 1];
+                            }
+                            indexOfPrevNotes++;
+                            return (prevNotes as Note[])[indexOfPrevNotes - 1];
+                        });
+                        console.log(notes, prevNotes, newNotes);
+                        await setNerorenClipboard(newNotes);
+                        chrome.action.setBadgeText({ text: newNotes.length > 0 ? `${newNotes.length}` : "" });
 
-            lazyCloseModal(el);
-            break;
+                        removeAllNotes();
+                        initNotes(settings);
+
+                        // synchronize other popups.
+                        chrome.runtime.sendMessage({ type: "restore" });
+
+                        el.classList.remove("visible");
+                    } catch (e) {
+                        alert(e);
+                    }
+                });
+
+                el.appendChild(undoButton);
+
+                lazyCloseModal(el);
+                break;
+        }
+
+        body?.appendChild(el);
+        setTimeout(() => {
+            el.classList.add("visible");
+        }, 100);
+    } catch (e) {
+        alert(e);
     }
-
-    body?.appendChild(el);
-    setTimeout(() => {
-        el.classList.add("visible");
-    }, 100);
 };

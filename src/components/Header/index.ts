@@ -34,20 +34,24 @@ export const setHeader = (language: Language) => {
         floatingButton.className = "button button-floating";
         floatingButton.innerHTML = '<div class="floating"></div>';
         floatingButton.addEventListener("click", async () => {
-            let width = 358;
-            const settings = await getNerorenClipboardSettings();
-            let left = 0;
-            if (settings.defaultLocation === DefaultLocation.RIGHT) {
-                left = screen.width;
+            try {
+                let width = 358;
+                const settings = await getNerorenClipboardSettings();
+                let left = 0;
+                if (settings.defaultLocation === DefaultLocation.RIGHT) {
+                    left = screen.width;
+                }
+                chrome.windows.create({
+                    url: "/popup.html",
+                    width,
+                    type: "popup",
+                    left,
+                    height: screen.height,
+                });
+                window.close();
+            } catch (e) {
+                alert(e);
             }
-            chrome.windows.create({
-                url: "/popup.html",
-                width,
-                type: "popup",
-                left,
-                height: screen.height,
-            });
-            window.close();
         });
 
         buttonWrapper.appendChild(clearButton);

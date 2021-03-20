@@ -141,7 +141,7 @@ export const createNote = (note: Note, settings: Settings) => {
         const copyButton = document.createElement("button");
         copyButton.className = "button button-copy";
         copyButton.innerHTML = `<div class="copy"></div>`;
-        copyButton.addEventListener("click", async () => {
+        copyButton.addEventListener("click", () => {
             if (type === "image") {
                 try {
                     const canvas = document.createElement("canvas");
@@ -296,14 +296,18 @@ const setCanvasImage = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D
 };
 
 export const initNotes = async (settings: Settings) => {
-    const notes = await getNerorenClipboard();
-    const noteWrapper = document.querySelector("#note-wrapper") as HTMLElement;
-    removeGridBeforeNotesCreated(noteWrapper);
-    notes.forEach((note) => {
-        createNote(note, settings);
-    });
-    const noteDoms = document.querySelectorAll<HTMLElement>(".note");
-    makeGridAfterNotesCreated(noteWrapper, noteDoms);
+    try {
+        const notes = await getNerorenClipboard();
+        const noteWrapper = document.querySelector("#note-wrapper") as HTMLElement;
+        removeGridBeforeNotesCreated(noteWrapper);
+        notes.forEach((note) => {
+            createNote(note, settings);
+        });
+        const noteDoms = document.querySelectorAll<HTMLElement>(".note");
+        makeGridAfterNotesCreated(noteWrapper, noteDoms);
+    } catch (e) {
+        alert(e);
+    }
 };
 
 export const removeAllNotes = () => {

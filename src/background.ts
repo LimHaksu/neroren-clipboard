@@ -25,32 +25,40 @@ const setContextMenus = async () => {
 };
 
 const addNewNote = async (notes: Note[], newNote: Note) => {
-    await setNerorenClipboard([...notes, newNote]);
-    chrome.action.setBadgeText({ text: `${notes.length + 1}` });
-    chrome.runtime.sendMessage({ type: "createNote", note: newNote });
+    try {
+        await setNerorenClipboard([...notes, newNote]);
+        chrome.action.setBadgeText({ text: `${notes.length + 1}` });
+        chrome.runtime.sendMessage({ type: "createNote", note: newNote });
+    } catch (e) {
+        alert(e);
+    }
 };
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
     (async function () {
         if (info.menuItemId === ContextMenuItemId || info.menuItemId === ContextMenuItemIdForPage) {
-            const notes = await getNerorenClipboard();
-            const { linkUrl, srcUrl, selectionText, pageUrl } = info;
-            const { title } = tab as chrome.tabs.Tab;
-            let data = null;
-            if (info.menuItemId === ContextMenuItemId) {
-                if (selectionText) {
-                    data = { type: "text", content: selectionText };
-                } else if (srcUrl && srcUrl.substring(0, 10) !== "data:image") {
-                    data = { type: "image", content: srcUrl };
-                } else if (linkUrl) {
-                    data = { type: "link", content: linkUrl };
+            try {
+                const notes = await getNerorenClipboard();
+                const { linkUrl, srcUrl, selectionText, pageUrl } = info;
+                const { title } = tab as chrome.tabs.Tab;
+                let data = null;
+                if (info.menuItemId === ContextMenuItemId) {
+                    if (selectionText) {
+                        data = { type: "text", content: selectionText };
+                    } else if (srcUrl && srcUrl.substring(0, 10) !== "data:image") {
+                        data = { type: "image", content: srcUrl };
+                    } else if (linkUrl) {
+                        data = { type: "link", content: linkUrl };
+                    }
+                } else if (info.menuItemId === ContextMenuItemIdForPage) {
+                    data = { type: "link", content: pageUrl };
                 }
-            } else if (info.menuItemId === ContextMenuItemIdForPage) {
-                data = { type: "link", content: pageUrl };
-            }
-            if (data) {
-                const newNote = { data, pageUrl, date: new Date().toJSON(), title, isPinned: false };
-                addNewNote(notes, newNote);
+                if (data) {
+                    const newNote = { data, pageUrl, date: new Date().toJSON(), title, isPinned: false };
+                    addNewNote(notes, newNote);
+                }
+            } catch (e) {
+                alert(e);
             }
         }
     })();

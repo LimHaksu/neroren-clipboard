@@ -5,7 +5,7 @@ import { renderLineSetting } from "components/options/LineSetting";
 import { renderLocationSelect } from "components/options/SelectLocation";
 import "./options.scss";
 
-const init = async () => {
+const init = () => {
     renderSettingsHeader();
     renderLanguageSelect();
     renderToggleButton();
