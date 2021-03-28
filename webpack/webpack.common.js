@@ -1,4 +1,3 @@
-const webpack = require("webpack");
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const srcDir = path.join(__dirname, "..", "src");
@@ -39,7 +38,10 @@ module.exports = {
             },
             {
                 test: new RegExp(".(" + fileExtensions.join("|") + ")$"),
-                use: "file-loader",
+                loader: "file-loader",
+                options: {
+                    name: "../assets/[contenthash].[ext]",
+                },
                 exclude: /node_modules/,
             },
         ],
