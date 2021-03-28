@@ -1,30 +1,19 @@
-const lazyCopy = () => {
-    setTimeout(async () => {
-        let selection = document.getSelection()?.toString().trim();
-
-        // for google spread sheet
-        if (!selection) {
-            const tempDom = document.createElement("textarea");
-            tempDom.style.position = "absolute";
-            tempDom.style.top = `${window.innerHeight / 2}px`;
-            tempDom.style.zIndex = "-9999";
-            document.body.appendChild(tempDom);
-            tempDom.focus();
-            document.execCommand("paste");
-            selection = tempDom.value;
-            tempDom.remove();
-        }
-
+async function getClipboardContents() {
+    try {
+        const text = await navigator.clipboard.readText();
+        return text;
+    } catch (err) {
+        console.error("Failed to read clipboard contents: ", err);
+    }
+}
+let previousSelectionText = "";
+setInterval(async () => {
+    const selectionText = await getClipboardContents();
+    if (selectionText && previousSelectionText !== selectionText) {
+        previousSelectionText = selectionText;
         chrome.runtime.sendMessage({
             type: "copy",
-            data: { selectionText: selection },
+            data: { selectionText },
         });
-    }, 0);
-};
-
-document.addEventListener("copy", lazyCopy, {
-    capture: true,
-});
-document.addEventListener("cut", lazyCopy, {
-    capture: true,
-});
+    }
+}, 1500);
