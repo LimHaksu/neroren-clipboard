@@ -59,12 +59,6 @@ export interface ContentsByLanguage {
 export type LangDic = {
     [key in Language]: ContentsByLanguage;
 };
-export declare class ClipboardItem {
-    constructor(data: { [mimeType: string]: Blob });
-}
-export interface Clipboard {
-    write?(notes: Array<ClipboardItem>): Promise<void>;
-}
 export enum ModalType {
     COPY = "COPY",
     REMOVE = "REMOVE",
