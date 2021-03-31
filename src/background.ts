@@ -80,21 +80,29 @@ chrome.runtime.onMessage.addListener(async (message) => {
                 textArea.select();
                 document.execCommand("paste");
                 const selectionText = textArea.value;
-                if (prevSelection !== selectionText) {
-                    chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
-                        const { title, url: pageUrl } = tabs[0] as chrome.tabs.Tab;
-                        const notes = await getNerorenClipboard();
-                        const data = { type: "text", content: selectionText };
-                        const newNote = {
-                            data,
-                            pageUrl: pageUrl ? pageUrl : "",
-                            date: new Date().toJSON(),
-                            title,
-                            isPinned: false,
-                        };
-                        addNewNote(notes, newNote);
 
-                        prevSelection = selectionText;
+                if (prevSelection !== selectionText) {
+                    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                        chrome.windows.getCurrent(async (browser) => {
+                            let title = "";
+                            let pageUrl = "";
+                            if (browser.focused) {
+                                title = (tabs[0] && tabs[0].title) || "";
+                                pageUrl = (tabs[0] && tabs[0].url) || "";
+                            }
+                            const notes = await getNerorenClipboard();
+                            const data = { type: "text", content: selectionText };
+                            const newNote = {
+                                data,
+                                pageUrl,
+                                date: new Date().toJSON(),
+                                title,
+                                isPinned: false,
+                            };
+                            addNewNote(notes, newNote);
+
+                            prevSelection = selectionText;
+                        });
                     });
                 }
             }
