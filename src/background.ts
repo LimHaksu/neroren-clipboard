@@ -61,57 +61,42 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     })();
 });
 
-chrome.runtime.onMessage.addListener(async (message, sender) => {
+chrome.runtime.onMessage.addListener(async (message) => {
     const { type } = message;
-    if (type === "copy") {
-        try {
-            const settings = await getNerorenClipboardSettings();
-            if (settings.autoSave) {
-                const { selectionText } = message.data;
-                const { title, url: pageUrl } = sender.tab as chrome.tabs.Tab;
-                const notes = await getNerorenClipboard();
-                const data = { type: "text", content: selectionText };
-                const newNote = {
-                    data,
-                    pageUrl: pageUrl ? pageUrl : "",
-                    date: new Date().toJSON(),
-                    title,
-                    isPinned: false,
-                };
-                addNewNote(notes, newNote);
-            }
-        } catch (e) {
-            alert(e);
-        }
-    } else if (type === "setting") {
+    if (type === "setting") {
         setContextMenus();
     }
 });
 
 (async function init() {
     const textArea = document.querySelector("#textarea") as HTMLTextAreaElement;
-    let prevSelection = "";
     if (textArea) {
-        setInterval(() => {
-            textArea.select();
-            document.execCommand("paste");
-            const selectionText = textArea.value;
-            if (prevSelection !== selectionText) {
-                chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
-                    const { title, url: pageUrl } = tabs[0] as chrome.tabs.Tab;
-                    const notes = await getNerorenClipboard();
-                    const data = { type: "text", content: selectionText };
-                    const newNote = {
-                        data,
-                        pageUrl: pageUrl ? pageUrl : "",
-                        date: new Date().toJSON(),
-                        title,
-                        isPinned: false,
-                    };
-                    addNewNote(notes, newNote);
+        textArea.select();
+        document.execCommand("paste");
+        let prevSelection = textArea.value;
+        setInterval(async () => {
+            const settings = await getNerorenClipboardSettings();
+            if (settings.autoSave) {
+                textArea.select();
+                document.execCommand("paste");
+                const selectionText = textArea.value;
+                if (prevSelection !== selectionText) {
+                    chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
+                        const { title, url: pageUrl } = tabs[0] as chrome.tabs.Tab;
+                        const notes = await getNerorenClipboard();
+                        const data = { type: "text", content: selectionText };
+                        const newNote = {
+                            data,
+                            pageUrl: pageUrl ? pageUrl : "",
+                            date: new Date().toJSON(),
+                            title,
+                            isPinned: false,
+                        };
+                        addNewNote(notes, newNote);
 
-                    prevSelection = selectionText;
-                });
+                        prevSelection = selectionText;
+                    });
+                }
             }
         }, 1500);
     }
