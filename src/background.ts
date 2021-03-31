@@ -87,7 +87,7 @@ chrome.runtime.onMessage.addListener(async (message) => {
                 document.execCommand("paste");
                 const selectionText = textArea.value;
 
-                if (prevSelection !== selectionText) {
+                if (selectionText !== "" && prevSelection !== selectionText) {
                     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                         chrome.windows.getCurrent(async (browser) => {
                             let title = "";
