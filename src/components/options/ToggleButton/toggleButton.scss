@@ -5,7 +5,7 @@
     align-items: center;
     .toggle-button {
         height: 40px;
-        width: 80px;
+        min-width: 80px;
         border-radius: 18px;
         background-color: #ddd;
         display: flex;

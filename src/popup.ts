@@ -10,7 +10,7 @@ import { changeTopModalLanguage } from "components/TopModal";
 import { getNerorenClipboardSettings } from "storage/sync";
 import "popup.scss";
 
-const init = async () => {
+(async function init() {
     try {
         const settings = await getNerorenClipboardSettings();
         setHeader(settings.language);
@@ -19,8 +19,7 @@ const init = async () => {
     } catch (e) {
         alert(e);
     }
-};
-init();
+})();
 
 chrome.runtime.onMessage.addListener(async (message) => {
     try {

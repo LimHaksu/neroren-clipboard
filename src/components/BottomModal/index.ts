@@ -66,9 +66,8 @@ export const popupBottomModal = async (type: ModalType, notes: Note[], removedIn
                             indexOfPrevNotes++;
                             return (prevNotes as Note[])[indexOfPrevNotes - 1];
                         });
-                        console.log(notes, prevNotes, newNotes);
                         await setNerorenClipboard(newNotes);
-                        chrome.action.setBadgeText({ text: newNotes.length > 0 ? `${newNotes.length}` : "" });
+                        chrome.browserAction.setBadgeText({ text: newNotes.length > 0 ? `${newNotes.length}` : "" });
 
                         removeAllNotes();
                         initNotes(settings);

@@ -19,15 +19,19 @@ body * {
 }
 
 .cat {
-    position: absolute;
+    position: fixed;
+    top: -120px;
     width: 80px;
     height: 80px;
     background-image: url("./assets/modal_cat.png");
     background-size: cover;
-    transform: translate(-150px, -295px) rotate(-180deg);
+    transform: rotate(-180deg);
+    transition: transform 1s;
+
+    cursor: pointer;
 
     &.visible {
-        transform: translate(-150px, -215px) rotate(-180deg);
+        transform: translate(0, 120px) rotate(-180deg);
         transition: transform 1s;
     }
 }

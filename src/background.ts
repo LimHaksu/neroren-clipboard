@@ -5,9 +5,6 @@ import { getContextMenusTitle } from "libs/language";
 
 const setContextMenus = async () => {
     try {
-        chrome.contextMenus.remove(ContextMenuItemId);
-        chrome.contextMenus.remove(ContextMenuItemIdForPage);
-
         const settings = await getNerorenClipboardSettings();
         chrome.contextMenus.create({
             id: ContextMenuItemId,
@@ -27,7 +24,7 @@ const setContextMenus = async () => {
 const addNewNote = async (notes: Note[], newNote: Note) => {
     try {
         await setNerorenClipboard([...notes, newNote]);
-        chrome.action.setBadgeText({ text: `${notes.length + 1}` });
+        chrome.browserAction.setBadgeText({ text: `${notes.length + 1}` });
         chrome.runtime.sendMessage({ type: "createNote", note: newNote });
     } catch (e) {
         alert(e);
@@ -64,15 +61,44 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     })();
 });
 
-chrome.runtime.onMessage.addListener((message, sender) => {
+chrome.runtime.onMessage.addListener(async (message, sender) => {
     const { type } = message;
     if (type === "copy") {
         try {
-            chrome.storage.sync.get(NerorenClipboardSettings, async (result) => {
-                const settings = result[NerorenClipboardSettings];
-                if (settings.autoSave) {
-                    const { selectionText } = message.data;
-                    const { title, url: pageUrl } = sender.tab as chrome.tabs.Tab;
+            const settings = await getNerorenClipboardSettings();
+            if (settings.autoSave) {
+                const { selectionText } = message.data;
+                const { title, url: pageUrl } = sender.tab as chrome.tabs.Tab;
+                const notes = await getNerorenClipboard();
+                const data = { type: "text", content: selectionText };
+                const newNote = {
+                    data,
+                    pageUrl: pageUrl ? pageUrl : "",
+                    date: new Date().toJSON(),
+                    title,
+                    isPinned: false,
+                };
+                addNewNote(notes, newNote);
+            }
+        } catch (e) {
+            alert(e);
+        }
+    } else if (type === "setting") {
+        setContextMenus();
+    }
+});
+
+(async function init() {
+    const textArea = document.querySelector("#textarea") as HTMLTextAreaElement;
+    let prevSelection = "";
+    if (textArea) {
+        setInterval(() => {
+            textArea.select();
+            document.execCommand("paste");
+            const selectionText = textArea.value;
+            if (prevSelection !== selectionText) {
+                chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
+                    const { title, url: pageUrl } = tabs[0] as chrome.tabs.Tab;
                     const notes = await getNerorenClipboard();
                     const data = { type: "text", content: selectionText };
                     const newNote = {
@@ -83,25 +109,19 @@ chrome.runtime.onMessage.addListener((message, sender) => {
                         isPinned: false,
                     };
                     addNewNote(notes, newNote);
-                }
-            });
-        } catch (e) {
-            alert(e);
-        }
-    } else if (type === "setting") {
-        setContextMenus();
-    }
-});
 
-const init = async () => {
+                    prevSelection = selectionText;
+                });
+            }
+        }, 1500);
+    }
     try {
         const notes = await getNerorenClipboard();
-        chrome.action.setBadgeText({ text: notes.length > 0 ? `${notes.length}` : "" });
+        chrome.browserAction.setBadgeText({ text: notes.length > 0 ? `${notes.length}` : "" });
         setContextMenus();
     } catch (e) {
         alert(e);
     }
-};
-init();
+})();
 
-chrome.action.setBadgeBackgroundColor({ color: [0, 0, 0, 255] });
+chrome.browserAction.setBadgeBackgroundColor({ color: [0, 0, 0, 255] });

@@ -23,7 +23,7 @@ yesButton?.addEventListener("click", async () => {
         });
         const remainedNotes = notes.filter((note) => note.isPinned);
         await setNerorenClipboard(remainedNotes);
-        chrome.action.setBadgeText({ text: remainedNotes.length === 0 ? "" : `${remainedNotes.length}` });
+        chrome.browserAction.setBadgeText({ text: remainedNotes.length === 0 ? "" : `${remainedNotes.length}` });
 
         // remove unpinned notes
         Array.from(noteDoms).forEach((noteDom) => {

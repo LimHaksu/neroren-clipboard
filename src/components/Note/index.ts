@@ -196,7 +196,7 @@ export const createNote = (note: Note, settings: Settings) => {
                 });
                 const [removedNote] = notes.splice(removedIndex, 1);
                 await setNerorenClipboard(notes);
-                chrome.action.setBadgeText({ text: notes.length > 0 ? `${notes.length}` : "" });
+                chrome.browserAction.setBadgeText({ text: notes.length > 0 ? `${notes.length}` : "" });
 
                 // remove inself
                 noteDom.remove();

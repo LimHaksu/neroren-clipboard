@@ -5,15 +5,22 @@ import { renderLineSetting } from "components/options/LineSetting";
 import { renderLocationSelect } from "components/options/SelectLocation";
 import "./options.scss";
 
-const init = () => {
+(function init() {
     renderSettingsHeader();
     renderLanguageSelect();
     renderToggleButton();
     renderLineSetting();
     renderLocationSelect();
-    const catImage = document.querySelector(".cat");
+    const catImage = document.querySelector(".cat") as HTMLDivElement;
+    catImage.style.left = `${Math.random() * 70}%`;
+    catImage?.addEventListener("click", () => {
+        catImage.classList.remove("visible");
+        setTimeout(() => {
+            catImage.style.left = `${Math.random() * 70}%`;
+            catImage?.classList.add("visible");
+        }, 1000);
+    });
     setTimeout(() => {
         catImage?.classList.add("visible");
     }, 500);
-};
-init();
+})();
