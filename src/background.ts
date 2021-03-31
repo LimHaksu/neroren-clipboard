@@ -1,7 +1,12 @@
 import { setNerorenClipboard, getNerorenClipboard } from "storage/local";
 import { getNerorenClipboardSettings } from "storage/sync";
-import { NerorenClipboardSettings, ContextMenuItemId, ContextMenuItemIdForPage, Note } from "types";
+import { ContextMenuItemId, ContextMenuItemIdForPage, Note } from "types";
 import { getContextMenusTitle } from "libs/language";
+
+const removeContextMenus = () => {
+    chrome.contextMenus.remove(ContextMenuItemId);
+    chrome.contextMenus.remove(ContextMenuItemIdForPage);
+};
 
 const setContextMenus = async () => {
     try {
@@ -64,6 +69,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 chrome.runtime.onMessage.addListener(async (message) => {
     const { type } = message;
     if (type === "setting") {
+        removeContextMenus();
         setContextMenus();
     }
 });
