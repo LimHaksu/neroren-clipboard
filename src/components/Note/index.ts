@@ -171,11 +171,16 @@ export const createNote = (note: Note, settings: Settings) => {
                 tempArea.value = content;
                 tempArea.select();
 
-                const isSuccessful = document.execCommand("copy");
-                if (!isSuccessful) {
-                    console.error("copy failed");
-                }
-                popupBottomModal(ModalType.COPY, [], []);
+                chrome.runtime.sendMessage({ type: "self-copy" }, (response) => {
+                    const { success } = response;
+                    if (success) {
+                        const isSuccessful = document.execCommand("copy");
+                        if (!isSuccessful) {
+                            console.error("copy failed");
+                        }
+                        popupBottomModal(ModalType.COPY, [], []);
+                    }
+                });
             }
         });
 

@@ -65,12 +65,16 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
         }
     })();
 });
-
-chrome.runtime.onMessage.addListener(async (message) => {
+let isSelfCopy = false;
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const { type } = message;
     if (type === "setting") {
         removeContextMenus();
         setContextMenus();
+    } else if (type === "self-copy") {
+        isSelfCopy = true;
+        sendResponse({ success: true });
+        return true;
     }
 });
 
@@ -90,22 +94,26 @@ chrome.runtime.onMessage.addListener(async (message) => {
                 if (selectionText !== "" && prevSelection !== selectionText) {
                     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                         chrome.windows.getCurrent(async (browser) => {
-                            let title = "";
-                            let pageUrl = "";
-                            if (browser.focused) {
-                                title = (tabs[0] && tabs[0].title) || "";
-                                pageUrl = (tabs[0] && tabs[0].url) || "";
+                            if (isSelfCopy) {
+                                isSelfCopy = false;
+                            } else {
+                                let title = "";
+                                let pageUrl = "";
+                                if (browser.focused) {
+                                    title = (tabs[0] && tabs[0].title) || "";
+                                    pageUrl = (tabs[0] && tabs[0].url) || "";
+                                }
+                                const notes = await getNerorenClipboard();
+                                const data = { type: "text", content: selectionText };
+                                const newNote = {
+                                    data,
+                                    pageUrl,
+                                    date: new Date().toJSON(),
+                                    title,
+                                    isPinned: false,
+                                };
+                                addNewNote(notes, newNote);
                             }
-                            const notes = await getNerorenClipboard();
-                            const data = { type: "text", content: selectionText };
-                            const newNote = {
-                                data,
-                                pageUrl,
-                                date: new Date().toJSON(),
-                                title,
-                                isPinned: false,
-                            };
-                            addNewNote(notes, newNote);
 
                             prevSelection = selectionText;
                         });
