@@ -3,3 +3,8 @@ body {
     margin: 0;
     user-select: none;
 }
+
+.temp-copy {
+    position: absolute;
+    left: -9999px;
+}

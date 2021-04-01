@@ -52,11 +52,12 @@ export const createNote = (note: Note, settings: Settings) => {
     if (noteWrapper) {
         const { date: dateJson } = note;
         const { pageUrl, data, title, isPinned } = note;
+        const { type, content } = data;
+
         const date = new Date(dateJson);
         const noteDom = document.createElement("div");
         noteDom.className = "note";
         noteDom.dataset.ispinned = isPinned.toString();
-        const { type, content } = data;
 
         const pinDom = document.createElement("div");
         pinDom.className = `pin-image ${isPinned ? "visible" : "dn"}`;
@@ -161,19 +162,16 @@ export const createNote = (note: Note, settings: Settings) => {
                         ]);
                     });
                     canvas.remove();
-                    popupBottomModal(ModalType.COPY, [note], []);
+                    popupBottomModal(ModalType.COPY, [], []);
                 } catch (error) {
                     console.error(error.name, error.message);
                 }
             } else {
-                const tempArea = document.createElement("textarea");
+                const tempArea = document.querySelector("#temp-copy") as HTMLTextAreaElement;
                 tempArea.value = content;
-                tempArea.style.position = "absolute";
-                tempArea.style.left = "-9999px";
-                document.body.appendChild(tempArea);
                 tempArea.select();
+
                 const isSuccessful = document.execCommand("copy");
-                document.body.removeChild(tempArea);
                 if (!isSuccessful) {
                     console.error("copy failed");
                 }
